@@ -23,7 +23,13 @@ public class Main {
 			System.err.println("can not access DB. check the db server");
 			return ;
 		}
-		TestInfo testInfo = dbManager.getTestInfo(testApiId);
+		TestInfo testInfo = null;
+		try {
+			testInfo = dbManager.getTestInfo(testApiId);
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 		
 		if(testInfo == null){
 			System.err.println("in main 01");
