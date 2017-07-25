@@ -21,8 +21,9 @@ public class DBManager {
 			if(!ip.equals("172.31.6.172")){
 				ip = "52.221.182.124";
 			}
-			else
+			else {
 				ip="localhost";
+			}
 			dbConnection = (Connection) DriverManager.getConnection("jdbc:mysql://"+ip+"/"+dbName,
 					id, passwd);
 			connected = true;
@@ -62,7 +63,7 @@ public class DBManager {
 	public boolean isConnected(){
 		return connected;
 	}
-	public TestInfo getTestInfo(int testApiId){
+	public TestInfo getTestInfo(int testApiId) throws Exception{
 		String sql = "SELECT server_id, api_id, test_params FROM test_api_list WHERE test_api_id="+testApiId;
 		TestInfo ret = null;
 		ResultSet rs = null;
@@ -81,6 +82,9 @@ public class DBManager {
 		try {
 			if(rs.next())
 				ret = new TestInfo(rs.getInt("server_id"),rs.getInt("api_id"),rs.getString("test_params"));
+			else {
+				throw new Exception();
+			}
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
