@@ -74,7 +74,7 @@
 			
 			$crontab_list = exec("crontab -l");
 
-			$new_command = $t_row['period'] . "/jdk1.8.0_131/bin/java -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'] . " ";
+			$new_command = $t_row['period'] . "/jdk1.8.0_131/bin/java -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'];
 			
 			if($_GET['toggle'] == 0)
 			{
@@ -108,8 +108,7 @@
 		{
 			$new_command = "/jdk1.8.0_131/bin/java -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'];
 			
-			echo $new_command;
-			system($new_command, $ret);
+			exec($new_command, $ret);
 			
 			if($ret == 0)
 			{
