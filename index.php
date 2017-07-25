@@ -71,7 +71,7 @@
 		
 		$crontab_list = exec("crontab -l");
 
-		$new_command = $t_row['period'] . "/jdk1.8.0_131/bin/java -jar /var/www/html/BH_intern_api_test/CURLtest_fat.jar " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'] . " " . addslashes(str_replace('", "', '","', $t_row['test_params']));
+		$new_command = $t_row['period'] . "/jdk1.8.0_131/bin/java -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'] . " " . addslashes(str_replace('", "', '","', $t_row['test_params']));
 		
 		if($_GET['toggle'] == 0)
 		{
