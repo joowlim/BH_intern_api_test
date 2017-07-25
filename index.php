@@ -8,7 +8,6 @@
 		border: none;
 		text-align: center;
 		text-decoration: none;
-		display: inline-block;
 		font-size: 16px;
 	}
 	button:hover {
@@ -184,16 +183,20 @@
 <body>
 <h1 style="text-align: center"><img src="./img/parrot_reading.gif" width = 48 onClick="window.location.reload()"/>Test API Admin<img src="./img/parrot_reading.gif" width = 48 onClick="window.location.reload()"/></h1>
 <!-- Main table -->
-<table align="center" border=0 width = 1000 style = "border-collapse: collapse;">
+<table align="center" border=0 width = 1000 style = "border-collapse: collapse;table-layout: auto;">
 	<tr>
 		<form action = "./index.php" method = "GET">
-		<td width = "27%">
+		<td>
 				<button type="submit" value = 0 name="mode" class = "button">API List</button>
+		</td>
+		<td>
 				<button type="submit" value = 1 name="mode" class = "button">Test API List</button>
+		</td>
+		<td>
 				<button type="submit" value = 2 name="mode" class = "button">Server List</button>
 		</td>
 		</form>
-		<td align = "right">
+		<td align = "right" width = "70%">
 			<form action = "./index.php" method = "GET">
 				<input type = "hidden" name = "mode" value = "<?php echo $mode; ?>" />
 				<?php
