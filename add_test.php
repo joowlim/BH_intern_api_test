@@ -50,20 +50,20 @@ function take_server($db_host,$db_user,$db_passwd,$db_name,$server_url,$server_i
 	//printf("%s",$server_url);
 	$take1 = mysqli_query($conn,"SELECT * FROM server_list where server_url = '$server_url' or server_ip = '$server_ip'");
 	if (!$take1){
-		printf("Hello");
-		printf("Error: %s\n", mysqli_error($conn));
+		//printf("Hello");
+		//printf("Error: %s\n", mysqli_error($conn));
 		#exit();
 	}
 	 
 	$take = mysqli_fetch_array($take1);
 	if (!$take){
-		printf("Error: %s\n", mysqli_error($conn));
+		//printf("Error: %s\n", mysqli_error($conn));
 		#exit();
 	}
 	//printf("%s",$server_url);
 	?>
 	<script type="text/javascript">
-		console.log("<?php echo $server_url; ?>");
+		//console.log("<?php echo $server_url; ?>");
 	</script>
 	<?php
 	$url = $take['server_url'];
@@ -91,15 +91,12 @@ function insert($db_host,$db_user,$db_passwd,$db_name,$insertArr){
 	}
 	$intimm = (int)$insertArr[3];
 	$intper = $insertArr[4];
-	echo "what is happening?";
+	//echo "what is happening?";
 	$insert = mysqli_query($conn,"insert into test_api_list (server_id, api_id, test_params, immediately, period) Values('$insertArr[0]','$insertArr[1]','$insertArr[2]','$intimm', '$intper')");
 	if(!$insert){
-		printf("%s\n",mysqli_error($conn));
+		//printf("%s\n",mysqli_error($conn));
 		echo '<script>alert("Failed to insert")</script>';
-		echo '
-		<script> 
-		window.location.reload();
-		</script>'; 
+
 	}
 	else{
 		echo '<script>alert("API inserted")</script>';
@@ -203,11 +200,20 @@ function getCrontabPeriod($period)
 	$api = take_api($db_host,$db_user,$db_passwd,$db_name);
 	//echo $api[3];
 	$params = json_decode($api[3], true);
+	$reloads = array();
+	foreach($params as $key => $value){
+			//echo "$key : $value".'<br />';
+			//echo $_POST[$key];
+			if($_POST[$key]){
+				$reloads[$key] = $_POST[$key];
+				
+			}
+		}
 	$count = count($params);
 	?>
 	<script type="text/javascript">
-		console.log("check here");
-		console.log("<?php echo $count; ?>");
+		//console.log("check here");
+		//console.log("<?php echo $count; ?>");
 	</script>
 	<?php
 ?>
@@ -240,17 +246,17 @@ function getCrontabPeriod($period)
 	<p align="center"> Register test api : </p>
 	<div>
 		<label for="server_url">서버 url :</label>
-		<input type="text" name="server_url">
+		<input type="text" name="server_url" <?php echo 'value = "'.$_POST['server_url'].'"';?>>
 	</div>
 	<div>
 		<label for="server_ip">서버 ip :</label>
-		<input type="text" name="server_ip">
+		<input type="text" name="server_ip" <?php echo 'value = "'.$_POST['server_ip'].'"';?>>
 	</div>
 	<div>
 		<label for="immediately">immediately :</label>
 		<select name="immediately">
-			<option value="1">O</option>
-			<option value="0">X</option>
+			<option value="1" <?php echo ($_POST['immediately'] == "1" ? 'selected="selected"' : '' );?>>O</option>
+			<option value="0" <?php echo ($_POST['immediately'] == "0" ? 'selected="selected"' : '' );?>>X</option>
 		</select>
 	</div>
 	<div>
@@ -280,30 +286,37 @@ function getCrontabPeriod($period)
 		$res = urldecode($res);
 		
 	?>
+	var reloads = <?php echo json_encode($reloads);?>;
+	
 	var paramArr = <?php echo iconv("CP949","UTF-8",$res);?>;
 	var paramArr2 = [];
 	for(var i in paramArr){
 		paramArr2.push([i, paramArr[i]]);
 	}
 	var hh = JSON.stringify(paramArr)
-	console.log(hh);
-	console.log(paramArr);
-	console.log(paramArr2[0][0]);
+	//console.log(hh);
+	//console.log(paramArr);
+	//console.log(paramArr2[0][0]);
 	//console.log(paramArr);
 	for(var i=0; i<paramArr.length; i++){
-		console.log(paramArr[i]);
+		//console.log(paramArr[i]);
 	}
-	console.log("Hqiweh");
+	//console.log("Hqiweh");
 	function makeForm() {
 	    var ffom = document.createElement("form");
 	    ffom.action = "";
 	    ffom.method = "post";
 	    return f;
 	}
-	function addData(namev) {
+
+	function addData(namev,preval) {
+		//var preval = "<?php $namev  = '<script> document.write(namev);</script>'; echo $_POST[' .$namev. '];?>";
 	    var elem = document.createElement("input");
 	    elem.setAttribute("type", "text");
 	    elem.setAttribute("name", namev);
+	    if(preval){
+	    	elem.setAttribute("value", preval);
+	    }
 	    return elem;
 	}
 	function addlabel(text){
@@ -320,15 +333,16 @@ function getCrontabPeriod($period)
 	var f = document.getElementById("forparams");
 	//f.textContent = "요기는 파라미터 입력하는 곳이얌 마음껏 입력해보시지\n";
 	var count = "<?php echo($count); ?>";
-	console.log("count checking");
-	console.log(count);
+	//console.log("count checking");
+	//console.log(count);
 	for(i=0; i<count; i++){
 		
-		console.log("parameter checking");
+		//console.log("parameter checking");
 		var d = adddiv(paramArr2[i][0]);
 		var l = addlabel(paramArr2[i][0].concat(" 파라미터 값을 입력해주세요 : "));
-		var c = addData(paramArr2[i][0]);
-		console.log(paramArr2[i][0]);
+		var c = addData(paramArr2[i][0],reloads[paramArr2[i][0]]);
+		//var prev = "<?php $namev  = '<script> document.write(paramArr2[i][0]);</script>'; echo $_POST[' .$namev. '];?>";
+		//console.log(paramArr2[i][0]);
 		d.appendChild(l);
 		d.appendChild(c);
 		f.appendChild(d);
@@ -362,17 +376,17 @@ function getCrontabPeriod($period)
 			echo "$key : $value".'<br />';
 		}*/
 		//echo  "whahtahth";
-		echo $paramArray;
+		//echo $paramArray;
 		$jsonwant = json_encode($paramArray);
 		?>
 		<script type="text/javascript">
-			console.log("<?php echo"hangeul"; ?>");
-			console.log("<?php echo $jsonwant; ?>");
+			//console.log("<?php echo"hangeul"; ?>");
+			//console.log("<?php echo $jsonwant; ?>");
 		</script>
 		<?php
-		echo $jsonwant;
+		//echo $jsonwant;
 		$jsonwant2 = str_replace('","', '", "', to_han($jsonwant));
-		echo $jsonwant2;
+		//echo $jsonwant2;
 		$insertArr = array();
 		array_push($insertArr,$id);
 		array_push($insertArr,$api[0]);
@@ -389,7 +403,7 @@ function getCrontabPeriod($period)
 		}
 		//array_push($insertArr,getCrontabPeriod($_POST['period']));
 		//echo $insertArr[3];
-		echo "checking error";
+		//echo "checking error";
 		insert($db_host,$db_user,$db_passwd,$db_name,$insertArr);
 	}
 ?>
