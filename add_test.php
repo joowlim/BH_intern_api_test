@@ -253,7 +253,7 @@ function getCrontabPeriod($period)
 		<input type="text" name="server_ip" <?php echo 'value = "'.$_POST['server_ip'].'"';?>>
 	</div>
 	<div>
-		<label for="immediately">immediately :</label>
+		<label for="immediately">즉시 실행 :</label>
 		<select name="immediately">
 			<option value="1" <?php echo ($_POST['immediately'] == "1" ? 'selected="selected"' : '' );?>>O</option>
 			<option value="0" <?php echo ($_POST['immediately'] == "0" ? 'selected="selected"' : '' );?>>X</option>
@@ -267,7 +267,7 @@ function getCrontabPeriod($period)
 					$i = 0;
 					for(;$i<count($period_list);$i++){
 						echo '
-						<option value="' . $period_list[$i] . '">' . $period_list[$i] . '</option>';
+						<option value="' . $period_list[$i] . '"' . ($_POST['period'] == $period_list[$i] ? 'selected="selected"' : '') . '>' . $period_list[$i] . '</option>';
 					}
 				?>
 			</select>
