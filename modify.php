@@ -246,7 +246,7 @@
 		</select>
 	</p>
 	<?php
-		echo '<p id="period_p_tag">period :<select name="period">';
+		echo '<p id="period_p_tag">period :<select id="period" name="period">';
 			for($i = 0;$i<count($period_list);$i++){
 				echo '
 				<option value="' . $period_star_list[$i] . '" '. ($period_star_list[$i] == $period ? 'selected="selected"' : "") .'>' . 
