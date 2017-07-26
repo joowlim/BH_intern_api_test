@@ -20,6 +20,7 @@
 	}
 	</style>
 	<?php
+
 	// Define global variables
 	include("./config.php");
 	// Define crontab functions
@@ -31,9 +32,39 @@
 
 	$mode = 0;
 
+	function delete_test_api($test_api_id, $insert, $uri)
+	{
+		global $link, $jar_path;
+		$t_sql = "SELECT * FROM test_api_list, api_list WHERE test_api_id = " . $test_api_id . " AND test_api_list.api_id = api_list.api_id";
+		$t_result = mysqli_query($link, $t_sql);
+		$t_row = mysqli_fetch_array($t_result, MYSQL_ASSOC);
+		
+		$crontab_list = exec("crontab -l");
+
+		$new_command = $t_row['period'] . "/jdk1.8.0_131/bin/java -jar " . $jar_path . " " . $uri . " " . $t_row['method'] . " " . $test_api_id;
+
+		if ($insert == 1)
+		{
+			insertCommand($crontab_list, $new_command);	
+			echo '<script>alert("api insert successed")</script>';
+		}
+	 	else
+	 	{
+			deleteCommand($new_command);
+			echo '<script>alert("api delete successed")</script>';
+	 	}
+	 	
+	}
+
 	// Delete rows by delete button
 	if($_GET['delete'] != null)
 	{
+		# Remove data from crontab
+		if($_GET['mode'] == 1)
+		{
+			delete_test_api($_GET['delete'], 0, $_GET['uri']);
+		}
+		// Remove data from db
 		if($_GET['mode'] == 0)
 		{
 			$sql = "DELETE FROM api_list WHERE api_id = " . $_GET['delete'];
@@ -51,7 +82,7 @@
 		
 		if(mysqli_affected_rows($link) == 1)
 		{
-			echo '<script>alert("Deleted")</script>';
+			echo '<script>alert("Deleted api")</script>';
 		}
 		else
 		{
@@ -62,29 +93,15 @@
 	// Toggle by toggle button
 	if($_GET['toggle'] != null && $_GET['mode'] == 1)
 	{
-		$t_sql = "SELECT * FROM test_api_list, api_list WHERE test_api_id = " . $_GET['api_id'] . " AND test_api_list.api_id = api_list.api_id";
-		$t_result = mysqli_query($link, $t_sql);
-		$t_row = mysqli_fetch_array($t_result, MYSQL_ASSOC);
-		
 		// Periodical work, register on the crontab
 		if($t_row['immediately'] == 1)
 		{
-			$sql = "UPDATE test_api_list SET is_running = ". $_GET['toggle'] ." WHERE test_api_id = " . $_GET['api_id'];
-			
-			$crontab_list = exec("crontab -l");
+      // Delete/Insert job on crontab. 
+  		delete_test_api($_GET['api_id'], $_GET['toggle'], $_GET['uri']);
 
-			$new_command = $t_row['period'] . "/jdk1.8.0_131/bin/java -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'];
-			
-			if($_GET['toggle'] == 0)
-			{
-				deleteCommand($new_command);
-			}
-			else
-			{
-				insertCommand($crontab_list, $new_command);
-			}
-			
-			mysqli_query($link, $sql);
+			$sql = "UPDATE test_api_list SET is_running = ". $_GET['toggle'] ." WHERE test_api_id = " . $_GET['api_id'];
+    
+      mysqli_query($link, $sql);
 			
 			if(mysqli_affected_rows($link) == 1)
 			{
@@ -294,7 +311,7 @@
 		<td style="background-color: '. $color .';">&nbsp;'. ($row['immediately'] == 1 ? "X" : "O") .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['period'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. ($row['is_running'] == 1 ? '<a href="./index.php?mode=1&page='.$page.'&column='.$_GET['column'].'&search_key='.$_GET['search_key'].'&toggle=0&api_id='.$row['test_api_id'].'&uri='.$row['server_url'] . '/' . $row['uri'].'" ><img src="./img/on.png" width = 28/></a>' : '<a href="./index.php?mode=1&page='.$page.'&column='.$_GET['column'].'&search_key='.$_GET['search_key'].'&toggle=1&api_id='.$row['test_api_id'].'&uri='.$row['server_url'] . '/' . $row['uri'].'"><img src="./img/off.png" width = 28/></a>') .'</td>
-		<td style="background-color: '. $color .';"><a href = "./index.php?mode=1&delete='.$row['test_api_id'].'&page='.$page.'"><img src="./img/x.png" href="./" width = 28/></a></td>
+		<td style="background-color: '. $color .';"><a href = "./index.php?mode=1&delete='.$row['test_api_id'].'&page='.$page.'&uri='.$row['server_url'] . '/' . $row['uri'].'"><img src="./img/x.png" href="./" width = 28/></a></td>
 		<td align = "center" style="background-color: '. $color .';"><a href = "./modify.php?mode=1&api_id='.$row['test_api_id'].'"><img src="./img/modify.png" href="./" width = 28/></a></td>
 	</tr>';
 		}
