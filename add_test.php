@@ -98,14 +98,14 @@ function insert($db_host,$db_user,$db_passwd,$db_name,$insertArr){
 		echo '<script>alert("Failed to insert")</script>';
 		echo '
 		<script> 
-		window.location = \'./index.php\';
+		window.location.reload();
 		</script>'; 
 	}
 	else{
 		echo '<script>alert("API inserted")</script>';
 		echo '
 		<script> 
-		window.location.reload();
+		window.location = \'./index.php\';
 		</script>'; 
 	}
 	mysqli_close($conn);
