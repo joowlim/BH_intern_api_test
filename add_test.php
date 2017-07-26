@@ -96,7 +96,7 @@ function insert($db_host,$db_user,$db_passwd,$db_name,$insertArr){
 	if(!$insert){
 		//printf("%s\n",mysqli_error($conn));
 		echo '<script>alert("Failed to insert")</script>';
-		
+
 	}
 	else{
 		echo '<script>alert("API inserted")</script>';
