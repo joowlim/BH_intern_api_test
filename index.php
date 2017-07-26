@@ -271,8 +271,8 @@
 		}
 		else
 		{
-			$sql = "SELECT * FROM test_log, api_list, server_list WHERE test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id ORDER BY log_id DESC LIMIT ". $offset .", " . $list_row_num;
-			$num_sql = "SELECT COUNT(*) FROM test_log, api_list, server_list WHERE test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id";	
+			$sql = "SELECT * FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON test_log.server_id = server_list.server_id ORDER BY log_id DESC LIMIT ". $offset .", " . $list_row_num;
+			$num_sql = "SELECT COUNT(*) FROM test_log";	
 		}
 	}
 	
