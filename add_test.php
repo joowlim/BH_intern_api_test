@@ -105,7 +105,7 @@ function insert($db_host,$db_user,$db_passwd,$db_name,$insertArr){
 		echo '<script>alert("API inserted")</script>';
 		echo '
 		<script> 
-		location.replace(\'http://52.221.182.124/index.php?mode='. $mode . '\'); 
+		window.location = \'./index.php\';
 		</script>'; 
 	}
 	mysqli_close($conn);
@@ -266,9 +266,9 @@ function getCrontabPeriod($period)
 				?>
 			</select>
 		</div>
-	<h3>요기는 파라미터 입력하는 곳이얌 마음껏 입력해보시지</h3>
+	<h3>파라미터 입력하는 곳입니다.</h3>
 	<div style = "padding: 3%; font-style:italic; font-size:1.0em; font-family:impact;" id="forparams"></div>
-		<input type = "submit" value = "다 입력했나 확인 다시 하구!" style ="width:20%; height:40px;">
+		<input type = "submit" value = "insert test api" style ="width:20%; height:40px;">
 	</div>
 	
 </form>
@@ -326,7 +326,7 @@ function getCrontabPeriod($period)
 		
 		console.log("parameter checking");
 		var d = adddiv(paramArr2[i][0]);
-		var l = addlabel(paramArr2[i][0].concat(" 파라미터다. 입력하지 않으면 잡아먹겠다. : "));
+		var l = addlabel(paramArr2[i][0].concat(" Insert parameter : "));
 		var c = addData(paramArr2[i][0]);
 		console.log(paramArr2[i][0]);
 		d.appendChild(l);
