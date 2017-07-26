@@ -98,7 +98,7 @@ function insert($db_host,$db_user,$db_passwd,$db_name,$insertArr){
 		echo '<script>alert("Failed to insert")</script>';
 		echo '
 		<script> 
-		window.location = \'./index.php\';
+		window.location = \'./add_test.php\';
 		</script>'; 
 	}
 	else{
