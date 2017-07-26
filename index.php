@@ -465,7 +465,7 @@
 		<td style="background-color: '. $color .';">&nbsp;'. $row['method'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['request_time'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['response_time'] .'</td>
-		<td style="background-color: '. $color .';">&nbsp;'. $row['elapsed_time_nano'] .'</td>
+		<td style="background-color: '. $color .';">&nbsp;'. $row['elapsed_time_nano'] / 1000000 .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['response_code'] .'</td>
 		<td style="background-color: '. $color .';"><a href = "./index.php?mode=3&delete='.$row['log_id'].'&page='.$page.'"><img src="./img/x.png" /></a></td>
 	</tr>';
