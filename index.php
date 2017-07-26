@@ -30,6 +30,11 @@
 		position: fixed;
 		height: 100%;
 		overflow: auto;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select:none;
+		user-select:none;
+		-o-user-select:none;
 	}
 	li p {
 		display: block;
