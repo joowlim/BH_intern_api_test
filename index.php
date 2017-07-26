@@ -93,15 +93,30 @@
 	// Toggle by toggle button
 	if($_GET['toggle'] != null && $_GET['mode'] == 1)
 	{
-		// Periodical work, register on the crontab
-		if($t_row['immediately'] == 1)
-		{
-      // Delete/Insert job on crontab. 
-  		delete_test_api($_GET['api_id'], $_GET['toggle'], $_GET['uri']);
 
+		$t_sql = "SELECT * FROM test_api_list, api_list WHERE test_api_id = " . $_GET['api_id'] . " AND test_api_list.api_id = api_list.api_id";
+		$t_result = mysqli_query($link, $t_sql);
+		$t_row = mysqli_fetch_array($t_result, MYSQL_ASSOC);
+		
+		// Periodical work, register on the crontab
+		if($t_row['immediately'] == 0)
+		{
 			$sql = "UPDATE test_api_list SET is_running = ". $_GET['toggle'] ." WHERE test_api_id = " . $_GET['api_id'];
-    
-      mysqli_query($link, $sql);
+			
+			$crontab_list = exec("crontab -l");
+
+			$new_command = $t_row['period'] . "/jdk1.8.0_131/bin/java -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'];
+			
+			if($_GET['toggle'] == 0)
+			{
+				deleteCommand($new_command);
+			}
+			else
+			{
+				insertCommand($crontab_list, $new_command);
+			}
+			
+			mysqli_query($link, $sql);
 			
 			if(mysqli_affected_rows($link) == 1)
 			{
