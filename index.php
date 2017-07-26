@@ -311,13 +311,23 @@
 				</select>
 				';
 				}
+				elseif($mode == 3)
+				{
+				echo'
+				<select style = "width:15%" name = "column">
+					<option value = "server_name" ' . ($_GET['column'] == "server_name" ? 'selected="selected"' : '') . '>Server</option>
+					<option value = "method" ' . ($_GET['column'] == "server_url" ? 'selected="selected"' : '') . '>Method</option>
+					<option value = "uri" ' . ($_GET['column'] == "server_ip" ? 'selected="selected"' : '') . '>URI</option>
+				</select>
+				';
+				}
 				?>
 				<input style = "width:60%" type = "text" name = "search_key" value = "<?php echo $_GET['search_key'] ?>"/>
 				<button style = "width:20%" type = "submit" class = "button">Search</button>
 			</form>
 		</td>
 		<?php
-		if($mode != 1)
+		if($mode == 0 || $mode == 2)
 		{
 			echo '
 		<td align = "right">
