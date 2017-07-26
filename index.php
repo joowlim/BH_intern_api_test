@@ -276,7 +276,7 @@
 <body>
 <!-- Main menu -->
 <ul>
-	<li><p>Test API Admin</p></li>
+	<li><p onClick="window.location.reload()"><img src="./img/parrot_reading.gif" width = 24/>Test API Admin<img src="./img/parrot_reading.gif" width = 24/></p></li>
 	<li><a <?php echo ($_GET['mode'] == 0 || $_GET['mode'] == null ? 'class="active"' : ''); ?> href="./index.php?mode=0">API</a></li>
 	<li><a <?php echo ($_GET['mode'] == 1 ? 'class="active"' : ''); ?>href="./index.php?mode=1">Test API</a></li>
 	<li><a <?php echo ($_GET['mode'] == 2 ? 'class="active"' : ''); ?>href="./index.php?mode=2">Server</a></li>
@@ -413,6 +413,39 @@
 		<td style="background-color: '. $color .';">&nbsp;'. $row['server_url'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['server_ip'] .'</td>
 		<td style="background-color: '. $color .';"><a href = "./index.php?mode=2&delete='.$row['server_id'].'&page='.$page.'"><img src="./img/x.png" href="./"/></a></td>
+	</tr>';
+		}
+	}
+	elseif($mode == 3)
+	{	
+		// add table header
+		$table_string = '
+	<tr>
+		<td width = "20%" style="padding: 8px;background-color: #AAAABA;border-radius: 6px 0 0 0;">Server Name</td>
+		<td style="padding: 8px;background-color: #AAAABA;">uri</td>
+		<td style="padding: 8px;background-color: #AAAABA;">method	</td>
+		<td style="padding: 8px;background-color: #AAAABA;">request time</td>
+		<td style="padding: 8px;background-color: #AAAABA;">response time</td>
+		<td style="padding: 8px;background-color: #AAAABA;">elapsed time</td>
+		<td style="padding: 8px;background-color: #AAAABA;">response</td>
+		<td width = "1%"  style="padding: 8px;background-color: #AAAABA;border-radius: 0 6px 0 0;">X</td>
+	</tr>';
+	
+		// add entire API list
+		for($i = 0; $i < mysqli_num_rows($result); $i++)
+		{
+			$color = ($i % 2 == 0 ? '#DDDDEA' : '#EEEEFA');
+			$row = mysqli_fetch_array($result);
+			$table_string = $table_string . '
+	<tr>
+		<td style="background-color: '. $color .';">&nbsp;'. $row['server_name'] .'</td>
+		<td style="background-color: '. $color .';">&nbsp;'. $row['uri'] .'</td>
+		<td style="background-color: '. $color .';">&nbsp;'. $row['method'] .'</td>
+		<td style="background-color: '. $color .';">&nbsp;'. $row['request_time'] .'</td>
+		<td style="background-color: '. $color .';">&nbsp;'. $row['response_time'] .'</td>
+		<td style="background-color: '. $color .';">&nbsp;'. $row['elapsed_time_nano'] .'</td>
+		<td style="background-color: '. $color .';">&nbsp;'. $row['response_code'] .'</td>
+		<td style="background-color: '. $color .';"><a href = "./index.php?mode=3&delete='.$row['log_id'].'&page='.$page.'"><img src="./img/x.png" /></a></td>
 	</tr>';
 		}
 	}
