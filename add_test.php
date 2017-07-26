@@ -105,7 +105,7 @@ function insert($db_host,$db_user,$db_passwd,$db_name,$insertArr){
 		echo '<script>alert("API inserted")</script>';
 		echo '
 		<script> 
-		location.replace(\'http://52.221.182.124/index.php?mode='. $mode . '\'); 
+		window.location = \'./index.php\';
 		</script>'; 
 	}
 	mysqli_close($conn);
@@ -266,9 +266,9 @@ function getCrontabPeriod($period)
 				?>
 			</select>
 		</div>
-	<h3>요기는 파라미터 입력하는 곳이얌 마음껏 입력해보시지</h3>
+	<h3>파라미터 입력하는 곳입니다.</h3>
 	<div style = "padding: 3%; font-style:italic; font-size:1.0em; font-family:impact;" id="forparams"></div>
-		<input type = "submit" value = "다 입력했나 확인 다시 하구!" style ="width:20%; height:40px;">
+		<input type = "submit" value = "insert test api" style ="width:20%; height:40px;">
 	</div>
 	
 </form>
@@ -326,7 +326,7 @@ function getCrontabPeriod($period)
 		
 		console.log("parameter checking");
 		var d = adddiv(paramArr2[i][0]);
-		var l = addlabel(paramArr2[i][0].concat(" 파라미터다. 입력하지 않으면 잡아먹겠다. : "));
+		var l = addlabel(paramArr2[i][0].concat(" 파라미터 값을 입력해주세요 : "));
 		var c = addData(paramArr2[i][0]);
 		console.log(paramArr2[i][0]);
 		d.appendChild(l);
@@ -380,7 +380,14 @@ function getCrontabPeriod($period)
 		// immediately 에 0과 1이 들어오는데 이것도 넣어주세요.
 		array_push($insertArr,$_POST['immediately']);
 		// $_POST['period'] 대신 getCrontabPeriod($_POST['period']) 를 입력해야 됨.
-		array_push($insertArr,getCrontabPeriod($_POST['period']));
+		// immediately 보고 period 넣을지 안넣을지 정하는 부분.
+		if($_POST['immediately'] == '1'){
+			array_push($insertArr,NULL);
+		}
+		else{
+			array_push($insertArr,getCrontabPeriod($_POST['period']));
+		}
+		//array_push($insertArr,getCrontabPeriod($_POST['period']));
 		//echo $insertArr[3];
 		echo "checking error";
 		insert($db_host,$db_user,$db_passwd,$db_name,$insertArr);
