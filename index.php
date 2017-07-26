@@ -269,7 +269,7 @@
 		<td style="background-color: '. $color .';">&nbsp;'. $row['server_url'] . '/' . $row['uri'] . '</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['method'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['test_params'] .'</td>
-		<td style="background-color: '. $color .';">&nbsp;'. ($row['immediately'] == 1 ? "X" : "O") .'</td>
+		<td style="background-color: '. $color .';">&nbsp;'. ($row['immediately'] == 1 ? "O" : "X") .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['period'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. ($row['is_running'] == 1 ? '<a href="./index.php?mode=1&page='.$page.'&column='.$_GET['column'].'&search_key='.$_GET['search_key'].'&toggle=0&api_id='.$row['test_api_id'].'&uri='.$row['server_url'] . '/' . $row['uri'].'" ><img src="./img/on.png" width = 28/></a>' : '<a href="./index.php?mode=1&page='.$page.'&column='.$_GET['column'].'&search_key='.$_GET['search_key'].'&toggle=1&api_id='.$row['test_api_id'].'&uri='.$row['server_url'] . '/' . $row['uri'].'"><img src="./img/off.png" width = 28/></a>') .'</td>
 		<td style="background-color: '. $color .';"><a href = "./index.php?mode=1&delete='.$row['test_api_id'].'&page='.$page.'"><img src="./img/x.png" href="./" width = 28/></a></td>
