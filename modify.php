@@ -3,6 +3,16 @@
 
 <?php
 	$mode = $_GET['mode'];
+
+	// Connect to the db
+	$link = mysqli_connect('localhost', 'root', 'root', 'API_TEST');
+	mysqli_set_charset($link, 'utf8');
+
+	// Define global variables
+	include("./config.php");
+	// Define crontab functions
+	include("./crontab.php");
+
 	if($mode == 0){
 		
 ?>
@@ -13,6 +23,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <?php
+
 
 	$api_id = $_GET['api_id'];
 	$sql = "SELECT * FROM api_list WHERE api_id=". $api_id ;
@@ -40,6 +51,8 @@
 ?>
 
 	<script>
+
+
 	function sendModifyRequest(id,uri,method,params){
 
 		if(uri ===""){
@@ -123,7 +136,9 @@
 		$period_star_list = array('*/1 * * * * ', '*/2 * * * * ', '*/3 * * * * ', '*/4 * * * * ', '*/5 * * * * ', '*/6 * * * * ', '*/10 * * * * ', '*/12 * * * * ',
 						'*/15 * * * * ', '*/20 * * * * ', '*/30 * * * * ', '0 */1 * * * ', '0 */2 * * * ', '0 */3 * * * ', '0 */4 * * * ', '0 */6 * * * ', '0 */8 * * * ', '0 */12 * * * ', '0 0 * * * ');
 
+
 		$test_api_id = $_GET['api_id'];
+		$uri = $_GET['uri'];
 		$sql = "SELECT * FROM test_api_list WHERE test_api_id=". $test_api_id;
 
 
@@ -143,6 +158,7 @@
 		$test_params = $data['test_params'];
 		$immediately = $data['immediately'];
 		$period = $data['period'];
+
 		
 		$sql = "SELECT * FROM api_list WHERE api_id=".$api_id;
 		
@@ -150,6 +166,7 @@
 		$data = mysqli_fetch_array($result);
 		
 		$uri = $data['uri'];
+		$method = $data['method'];
 		
 		$sql = "SELECT * FROM server_list WHERE server_id=".$server_id;
 		
@@ -170,7 +187,7 @@
 			$('#period_p_tag').show();
 		}
 	}
-	function sendModifyRequest(id,params,immediately,period){
+	function sendModifyRequest(id,params,immediately,period,uri,jar_path,old_period,old_method){
 
 		
 		var data;
@@ -186,7 +203,11 @@
 				id : id,
 				params : params,
 				immediately : immediately,
-				period : period
+				period : period,
+				uri : uri,
+				jar_path : jar_path,
+				old_period : old_period,
+				old_method : old_method
 			};
 		}
 		$.ajax({
@@ -254,13 +275,18 @@
 				
 			}
 		echo '</select> </p>';
-		
 	?>
 </form>
 	<script>
 		selectListener();
 	</script>
-	<button class="btn btn-primary btn-lg" onClick="sendModifyRequest(<?php echo $test_api_id;?>,$('#params').val(),$('#immediately').val(),$('#period').val())">확인</button>
+	<?php
+		$uri_q = "'" . $server_url . $uri . "'";
+		$jar_path_q = "'" . $jar_path . "'";
+		$period_q = "'" . $period . "'";
+		$method_q = "'" . $method . "'";
+	?>
+	<button class="btn btn-primary btn-lg" onClick="sendModifyRequest(<?php echo $test_api_id;?>,$('#params').val(),$('#immediately').val(),$('#period').val(),<?php echo $uri_q;?>,<?php echo $jar_path_q;?>,<?php echo $period_q;?>,<?php echo $method_q;?>)">확인</button>
 	<a href="."><button class="btn btn-default btn-lg">취소</button></a>
 </div>
 </body>

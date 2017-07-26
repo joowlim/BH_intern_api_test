@@ -85,9 +85,8 @@
 
 	$mode = 0;
 
-	function delete_test_api($test_api_id, $insert, $uri)
+	function crontab_del_ins_mod_test_api($test_api_id, $op, $uri, $link, $jar_path)
 	{
-		global $link, $jar_path;
 		$t_sql = "SELECT * FROM test_api_list, api_list WHERE test_api_id = " . $test_api_id . " AND test_api_list.api_id = api_list.api_id";
 		$t_result = mysqli_query($link, $t_sql);
 		$t_row = mysqli_fetch_array($t_result, MYSQL_ASSOC);
@@ -96,17 +95,22 @@
 
 		$new_command = $t_row['period'] . "/jdk1.8.0_131/bin/java -jar " . $jar_path . " " . $uri . " " . $t_row['method'] . " " . $test_api_id;
 
-		if ($insert == 1)
+		// op 1 : insert , op 0 : delete , op 2 : modify
+		if ($op == 1)
 		{
-			insertCommand($crontab_list, $new_command);	
+			insertCommand($new_command);	
 			echo '<script>alert("api insert successed")</script>';
 		}
-	 	else
+	 	elseif ($op == 0)
 	 	{
 			deleteCommand($new_command);
 			echo '<script>alert("api delete successed")</script>';
 	 	}
-	 	
+	 	elseif ($op == 2) 
+	 	{
+	 		modifyCommand($crontab_list, $new_command);
+	 		echo '<script>alert("api modify successed")</script>';
+	 	}
 	}
 
 	// Delete rows by delete button
@@ -115,7 +119,7 @@
 		# Remove data from crontab
 		if($_GET['mode'] == 1)
 		{
-			delete_test_api($_GET['delete'], 0, $_GET['uri']);
+			crontab_del_ins_mod_test_api($_GET['delete'], 0, $_GET['uri'], $link, $jar_path);
 		}
 		// Remove data from db
 		if($_GET['mode'] == 0)
@@ -170,7 +174,7 @@
 			}
 			else
 			{
-				insertCommand($crontab_list, $new_command);
+				insertCommand($new_command);
 			}
 			
 			mysqli_query($link, $sql);
@@ -412,8 +416,8 @@
 		<td style="background-color: '. $color .';">&nbsp;'. ($row['immediately'] == 1 ? "O" : "X") .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['period'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. ($row['is_running'] == 1 ? '<a href="./index.php?mode=1&page='.$page.'&column='.$_GET['column'].'&search_key='.$_GET['search_key'].'&toggle=0&api_id='.$row['test_api_id'].'&uri='.$row['server_url'] . $row['uri'].'" ><img src="./img/on.png" width = 28/></a>' : '<a href="./index.php?mode=1&page='.$page.'&column='.$_GET['column'].'&search_key='.$_GET['search_key'].'&toggle=1&api_id='.$row['test_api_id'].'&uri='.$row['server_url'] . $row['uri'].'"><img src="./img/off.png" width = 28/></a>') .'</td>
-		<td style="background-color: '. $color .';"><a href = "./index.php?mode=1&delete='.$row['test_api_id'].'&page='.$page.'&uri='.$row['server_url'] . '/' . $row['uri'].'"><img src="./img/x.png" href="./" width = 28/></a></td>
-		<td align = "center" style="background-color: '. $color .';"><a href = "./modify.php?mode=1&api_id='.$row['test_api_id'].'"><img src="./img/modify.png" href="./" width = 28/></a></td>
+		<td style="background-color: '. $color .';"><a href = "./index.php?mode=1&delete='.$row['test_api_id'].'&page='.$page.'&uri='.$row['server_url'] . $row['uri'].'"><img src="./img/x.png" href="./" width = 28/></a></td>
+		<td align = "center" style="background-color: '. $color .';"><a href = "./modify.php?mode=1&api_id='.$row['test_api_id'].'&uri='.$row['server_url'] . $row['uri'].'"><img src="./img/modify.png" href="./" width = 28/></a></td>
 	</tr>';
 		}
 	}
