@@ -18,6 +18,47 @@
 		display: inline-block;
 		font-size: 16px;
 	}
+	body {
+		margin: 0;
+	}
+	ul {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		width: 15%;
+		background-color: #f1f1f1;
+		position: fixed;
+		height: 100%;
+		overflow: auto;
+	}
+	li p {
+		display: block;
+		color: #000;
+		padding: 8px 16px;
+		text-decoration: none;
+	}
+	
+	li a {
+		border-radius: 5px;
+		display: block;
+		color: #000;
+		padding: 8px 16px;
+		text-decoration: none;
+	}
+
+	li a.active {
+		background-color: #4CAF50;
+		color: white;
+	}
+
+	li a:hover:not(.active) {
+		background-color: #555;
+		color: white;
+	}
+	li a.active:hover {
+		background-color: #6DD071;
+		color: white;
+	}
 	</style>
 	<?php
 
@@ -198,6 +239,26 @@
 		$sql = "SELECT * FROM server_list " . $search_where_clause . " ORDER BY server_id DESC LIMIT ". $offset .", " . $list_row_num;
 		$num_sql = "SELECT COUNT(*) FROM server_list " . $search_where_clause;
 	}
+	elseif($_GET['mode'] == 3){
+		// Show Logs
+		$mode = 3;
+		$page = ($_GET['page'] == null ? 0 : $_GET['page']);
+		$offset = $page * $list_row_num;
+		
+		// Search by the key
+		if($_GET['search_key'] != null)
+		{
+			$search_where_clause = "WHERE " . $_GET['column'] . " LIKE '%" .$_GET['search_key'] ."%'";
+			
+			$sql = "SELECT * FROM test_log, api_list, server_list " . $search_where_clause . " AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id ORDER BY log_id DESC LIMIT ". $offset .", " . $list_row_num;
+			$num_sql = "SELECT COUNT(*) FROM test_log " . $search_where_clause;
+		}
+		else
+		{
+			$sql = "SELECT * FROM test_log, api_list, server_list WHERE test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id ORDER BY log_id DESC LIMIT ". $offset .", " . $list_row_num;
+			$num_sql = "SELECT COUNT(*) FROM test_log";	
+		}
+	}
 	
 	$result = mysqli_query($link, $sql);
 	$num_row = mysqli_fetch_array(mysqli_query($link, $num_sql), MYSQL_NUM);
@@ -213,22 +274,21 @@
 	?>
 </head>
 <body>
+<!-- Main menu -->
+<ul>
+	<li><p>Test API Admin</p></li>
+	<li><a <?php echo ($_GET['mode'] == 0 || $_GET['mode'] == null ? 'class="active"' : ''); ?> href="./index.php?mode=0">API</a></li>
+	<li><a <?php echo ($_GET['mode'] == 1 ? 'class="active"' : ''); ?>href="./index.php?mode=1">Test API</a></li>
+	<li><a <?php echo ($_GET['mode'] == 2 ? 'class="active"' : ''); ?>href="./index.php?mode=2">Server</a></li>
+	<li><a <?php echo ($_GET['mode'] == 3 ? 'class="active"' : ''); ?>href="./index.php?mode=3">Log</a></li>
+</ul>
+<!-- Main page -->
+<div style="margin-left:15%;padding:1px 16px;">
 <h1 style="text-align: center"><img src="./img/parrot_reading.gif" width = 48 onClick="window.location.reload()"/>Test API Admin<img src="./img/parrot_reading.gif" width = 48 onClick="window.location.reload()"/></h1>
 <!-- Main table -->
-<table align="center" border=0 width = 1000 style = "border-collapse: collapse;table-layout: auto;">
+<table align="center" border=0 width = 1000 style = "border-collapse: collapse;">
 	<tr>
-		<form action = "./index.php" method = "GET">
-		<td>
-				<button type="submit" value = 0 name="mode" class = "button">API List</button>
-		</td>
-		<td>
-				<button type="submit" value = 1 name="mode" class = "button">Test API List</button>
-		</td>
-		<td>
-				<button type="submit" value = 2 name="mode" class = "button">Server List</button>
-		</td>
-		</form>
-		<td align = "right" width = "70%">
+		<td width = "100%">
 			<form action = "./index.php" method = "GET">
 				<input type = "hidden" name = "mode" value = "<?php echo $mode; ?>" />
 				<?php
@@ -252,7 +312,7 @@
 				';
 				}
 				?>
-				<input style = "width:55%" type = "text" name = "search_key" value = "<?php echo $_GET['search_key'] ?>"/>
+				<input style = "width:60%" type = "text" name = "search_key" value = "<?php echo $_GET['search_key'] ?>"/>
 				<button style = "width:20%" type = "submit" class = "button">Search</button>
 			</form>
 		</td>
@@ -274,12 +334,12 @@
 		// add table header
 		$table_string = '
 	<tr>
-		<td width = "30%" style="padding: 8px;background-color: #AAAABA;">URI</td>
+		<td width = "30%" style="padding: 8px;background-color: #AAAABA;border-radius: 6px 0 0 0;">URI</td>
 		<td width = "10%" style="padding: 8px;background-color: #AAAABA;">Method</td>
 		<td style="padding: 8px;background-color: #AAAABA;">Argument</td>
 		<td width = "1%" style="padding: 8px;background-color: #AAAABA;">X</td>
 		<td width = "1%" align = "center =" style="background-color: #AAAABA;">Modify</td>
-		<td width = "1%" align = "center =" style="background-color: #AAAABA;">Test</td>
+		<td width = "1%" align = "center =" style="background-color: #AAAABA;border-radius: 0 6px 0 0;">Test</td>
 	</tr>';
 
 		// add entire API list
@@ -303,14 +363,14 @@
 		// add table header
 		$table_string = '
 	<tr>
-		<td width = "30%" style="padding: 8px;background-color: #AAAABA;">URI</td>
+		<td width = "30%" style="padding: 8px;background-color: #AAAABA;border-radius: 6px 0 0 0;">URI</td>
 		<td width = "10%" style="padding: 8px;background-color: #AAAABA;">Method</td>
 		<td style="padding: 8px;background-color: #AAAABA;">Param</td>
 		<td style="padding: 8px;background-color: #AAAABA;">I</td>
 		<td style="padding: 8px;background-color: #AAAABA;">Period</td>
 		<td style="padding: 8px;background-color: #AAAABA;">On</td>
 		<td width = "1%" style="padding: 8px;background-color: #AAAABA;">X</td>
-		<td width = "1%" align = "center" style="background-color: #AAAABA;">Modify</td>
+		<td width = "1%" align = "center" style="background-color: #AAAABA;border-radius: 0 6px 0 0;">Modify</td>
 	</tr>';
 	
 		// add test API list
@@ -336,10 +396,10 @@
 		// add table header
 		$table_string = '
 	<tr>
-		<td width = "30%" style="padding: 8px;background-color: #AAAABA;">Server Name</td>
+		<td width = "30%" style="padding: 8px;background-color: #AAAABA;border-radius: 6px 0 0 0;">Server Name</td>
 		<td style="padding: 8px;background-color: #AAAABA;">Server URL</td>
 		<td style="padding: 8px;background-color: #AAAABA;">Server IP</td>
-		<td width = "1%"  style="padding: 8px;background-color: #AAAABA;">X</td>
+		<td width = "1%"  style="padding: 8px;background-color: #AAAABA;border-radius: 0 6px 0 0;">X</td>
 	</tr>';
 	
 		// add entire API list
@@ -395,6 +455,7 @@
 	// echo actual page string
 	echo $page_string;
 	?>
+</div>
 </div>
 </body>
 </html>
