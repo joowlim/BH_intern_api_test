@@ -18,6 +18,13 @@
 		display: inline-block;
 		font-size: 16px;
 	}
+	img {
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select:none;
+		user-select:none;
+		-o-user-select:none;
+	}
 	body {
 		margin: 0;
 	}
