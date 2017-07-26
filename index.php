@@ -130,6 +130,10 @@
 		{
 			$sql = "DELETE FROM server_list WHERE server_id = " . $_GET['delete'];
 		}
+		elseif($_GET['mode'] == 3)
+		{
+			$sql = "DELETE FROM test_log WHERE log_id = " . $_GET['delete'];
+		}
 	
 		mysqli_query($link, $sql);
 		
