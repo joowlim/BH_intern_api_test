@@ -163,7 +163,7 @@
 <script>
 
 	function selectListener(){
-		if($('#immediately').val()=="0"){
+		if($('#immediately').val()=="1"){
 			$('#period_p_tag').hide();
 		}
 		else{
@@ -174,7 +174,7 @@
 
 		
 		var data;
-		if(immediately == 0){
+		if(immediately == 1){
 			data = {
 				id : id,
 				params : params,
@@ -233,13 +233,13 @@
 	<p>테스팅 타이밍 : 
 		<select class="form-control" onchange="selectListener()" id="immediately" name="immediately">
 		<?php
-			if($immediately == 0){
-				echo '<option value="0" selected="selected">즉시</option>'."\n";
-				echo '<option value="1">주기적으로</option>';
+			if($immediately == 1){
+				echo '<option value="1" selected="selected">즉시</option>'."\n";
+				echo '<option value="0">주기적으로</option>';
 			}
 			else{
-				echo '<option value="0">즉시</option>'."\n";
-				echo '<option value="1" selected="selected">주기적으로</option>';
+				echo '<option value="1">즉시</option>'."\n";
+				echo '<option value="0" selected="selected">주기적으로</option>';
 			}
 		
 		?> 
