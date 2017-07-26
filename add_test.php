@@ -98,7 +98,7 @@ function insert($db_host,$db_user,$db_passwd,$db_name,$insertArr){
 		echo '<script>alert("Failed to insert")</script>';
 		echo '
 		<script> 
-		location.replace(\'http://52.221.182.124/index.php?mode='. $mode . '\'); 
+		window.location = \'./index.php\';
 		</script>'; 
 	}
 	else{
