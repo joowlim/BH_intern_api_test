@@ -14,7 +14,7 @@
 	mysqli_set_charset($conn, 'utf8');
 	
 	
-	if($immediately == 0){ //즉시
+	if($immediately == 1){ //즉시
 		$sql = "UPDATE test_api_list SET test_params='".$params."', immediately=".$immediately.",period=NULL WHERE test_api_id=".$test_api_id;
 		$result = mysqli_query($conn,$sql);
 		echo $result;
