@@ -8,7 +8,6 @@
 		border: none;
 		text-align: center;
 		text-decoration: none;
-		display: inline-block;
 		font-size: 16px;
 	}
 	button:hover {
@@ -94,28 +93,48 @@
 	// Toggle by toggle button
 	if($_GET['toggle'] != null && $_GET['mode'] == 1)
 	{
-		delete_test_api($_GET['api_id'], $_GET['toggle'], $_GET['uri']);
-	
-		$sql = "UPDATE test_api_list SET is_running = ". $_GET['toggle'] ." WHERE test_api_id = " . $_GET['api_id'];
-		
-		mysqli_query($link, $sql);
-		
-		if(mysqli_affected_rows($link) == 1)
+		// Periodical work, register on the crontab
+		if($t_row['immediately'] == 1)
 		{
-			if($_GET['toggle'] == 1)
+      // Delete/Insert job on crontab. 
+  		delete_test_api($_GET['api_id'], $_GET['toggle'], $_GET['uri']);
+
+			$sql = "UPDATE test_api_list SET is_running = ". $_GET['toggle'] ." WHERE test_api_id = " . $_GET['api_id'];
+    
+      mysqli_query($link, $sql);
+			
+			if(mysqli_affected_rows($link) == 1)
 			{
-				echo '<script>alert("Test registered")</script>';
+				if($_GET['toggle'] == 1)
+				{
+					echo '<script>alert("Test registered")</script>';
+				}
+				else
+				{
+					echo '<script>alert("Test unregistered")</script>';
+				}
 			}
 			else
 			{
-				echo '<script>alert("Test unregistered")</script>';
+				echo '<script>alert("Failed to update")</script>';
 			}
 		}
+		// Execute only one time
 		else
 		{
-			echo '<script>alert("Failed to update")</script>';
+			$new_command = "/jdk1.8.0_131/bin/java -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'];
+			
+			exec($new_command, $ret);
+			
+			if($ret == 0)
+			{
+					echo '<script>alert("Test successfully executed")</script>';
+			}
+			else
+			{
+					echo '<script>alert("Test Failed : "'. $ret .')</script>';
+			}
 		}
-		
 	}
 	// Mode changing
 	if($_GET['mode'] == null || $_GET['mode'] == 0){
@@ -181,16 +200,20 @@
 <body>
 <h1 style="text-align: center"><img src="./img/parrot_reading.gif" width = 48 onClick="window.location.reload()"/>Test API Admin<img src="./img/parrot_reading.gif" width = 48 onClick="window.location.reload()"/></h1>
 <!-- Main table -->
-<table align="center" border=0 width = 1000 style = "border-collapse: collapse;">
+<table align="center" border=0 width = 1000 style = "border-collapse: collapse;table-layout: auto;">
 	<tr>
 		<form action = "./index.php" method = "GET">
-		<td width = "27%">
+		<td>
 				<button type="submit" value = 0 name="mode" class = "button">API List</button>
+		</td>
+		<td>
 				<button type="submit" value = 1 name="mode" class = "button">Test API List</button>
+		</td>
+		<td>
 				<button type="submit" value = 2 name="mode" class = "button">Server List</button>
 		</td>
 		</form>
-		<td align = "right">
+		<td align = "right" width = "70%">
 			<form action = "./index.php" method = "GET">
 				<input type = "hidden" name = "mode" value = "<?php echo $mode; ?>" />
 				<?php
