@@ -473,7 +473,7 @@
 </table>
 <p></p>
 <!-- Page numbering -->
-<div align = "center">
+<div align = "center" style="-moz-user-select: none;-webkit-user-select: none;-ms-user-select:none;user-select:none;-o-user-select:none;">
 	<?php
 	// define search data
 	$search_get_data = ($_GET['search_key'] != null ? '&column=' . $_GET['column'] . '&search_key=' . $_GET['search_key'] : '');
