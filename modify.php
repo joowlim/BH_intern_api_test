@@ -62,7 +62,7 @@
 				}
 				else{
 					alert("성공");
-					window.location = './index.php';
+					window.location = '/./';
 				}
 				
 			}
@@ -200,7 +200,7 @@
 				}
 				else{
 					alert("성공");
-					window.location = './';
+					window.location = '/./';
 				}
 			}
 		});
