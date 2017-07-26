@@ -238,7 +238,7 @@
 		
 		$sql = "SELECT * FROM api_list, server_list, test_api_list WHERE api_list.api_id = test_api_list.api_id AND " .
 		"server_list.server_id = test_api_list.server_id" . ($_GET['search_key'] == null ? '' : ' AND (' . $search_where_clause . ' OR server_url LIKE "%'. $_GET['search_key'] .'%")') ." ORDER BY test_api_id DESC LIMIT ". $offset .", " . $list_row_num;
-		$num_sql = "SELECT COUNT(*) FROM test_api_list" . ($_GET['search_key'] == null ? '' : ' WHERE ' . $search_where_clause);
+		$num_sql = "SELECT COUNT(*) FROM api_list, server_list, test_api_list" . ($_GET['search_key'] == null ? '' : ' WHERE ' . $search_where_clause .' AND api_list.api_id = test_api_list.api_id AND server_list.server_id = test_api_list.server_id');
 	}
 	elseif($_GET['mode'] == 2){
 		// Show entire api list
@@ -272,7 +272,7 @@
 		else
 		{
 			$sql = "SELECT * FROM test_log, api_list, server_list WHERE test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id ORDER BY log_id DESC LIMIT ". $offset .", " . $list_row_num;
-			$num_sql = "SELECT COUNT(*) FROM test_log";	
+			$num_sql = "SELECT COUNT(*) FROM test_log, api_list, server_list WHERE test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id";	
 		}
 	}
 	
