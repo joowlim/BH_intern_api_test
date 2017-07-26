@@ -402,7 +402,7 @@
 			$row = mysqli_fetch_array($result);
 			$table_string = $table_string . '
 	<tr>
-		<td style="background-color: '. $color .';">&nbsp;'. $row['server_url'] . '/' . $row['uri'] . '</td>
+		<td style="background-color: '. $color .';">&nbsp;'. $row['server_url'] . $row['uri'] . '</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['method'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['test_params'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. ($row['immediately'] == 1 ? "O" : "X") .'</td>
