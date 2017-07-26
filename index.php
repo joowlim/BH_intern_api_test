@@ -139,7 +139,7 @@
 		
 		if(mysqli_affected_rows($link) == 1)
 		{
-			echo '<script>alert("Deleted api")</script>';
+			echo '<script>alert("Deleted")</script>';
 		}
 		else
 		{
