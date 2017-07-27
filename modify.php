@@ -2,6 +2,7 @@
 <html>
 
 <?php
+
 	$mode = $_GET['mode'];
 
 	// Connect to the db
@@ -195,7 +196,11 @@
 			data = {
 				id : id,
 				params : params,
-				immediately : immediately
+				immediately : immediately,
+				uri : uri,
+				jar_path : jar_path,
+				old_period : old_period,
+				old_method : old_method
 			};
 		}
 		else{
@@ -221,7 +226,7 @@
 				}
 				else{
 					alert("성공");
-					window.location = './';
+					window.location = './index.php?mode=<?php echo $mode?>';
 				}
 			}
 		});
@@ -275,6 +280,7 @@
 				
 			}
 		echo '</select> </p>';
+
 	?>
 </form>
 	<script>
@@ -285,6 +291,7 @@
 		$jar_path_q = "'" . $jar_path . "'";
 		$period_q = "'" . $period . "'";
 		$method_q = "'" . $method . "'";
+
 	?>
 	<button class="btn btn-primary btn-lg" onClick="sendModifyRequest(<?php echo $test_api_id;?>,$('#params').val(),$('#immediately').val(),$('#period').val(),<?php echo $uri_q;?>,<?php echo $jar_path_q;?>,<?php echo $period_q;?>,<?php echo $method_q;?>)">확인</button>
 	<a href="."><button class="btn btn-default btn-lg">취소</button></a>
