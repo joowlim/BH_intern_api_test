@@ -93,7 +93,7 @@
 		
 		$crontab_list = exec("crontab -l");
 
-		$new_command = $t_row['period'] . "/jdk1.8.0_131/bin/java -jar " . $jar_path . " " . $uri . " " . $t_row['method'] . " " . $test_api_id;
+		$new_command = $t_row['period'] . $java_path . " -jar " . $jar_path . " " . $uri . " " . $t_row['method'] . " " . $test_api_id;
 
 		// op 1 : insert , op 0 : delete , op 2 : modify
 		if ($op == 1)
@@ -166,7 +166,7 @@
 			
 			$crontab_list = exec("crontab -l");
 
-			$new_command = $t_row['period'] . "/jdk1.8.0_131/bin/java -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'];
+			$new_command = $t_row['period'] . $java_path . " -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'];
 			
 			if($_GET['toggle'] == 0)
 			{
@@ -198,7 +198,7 @@
 		// Execute only one time
 		else
 		{
-			$new_command = "/jdk1.8.0_131/bin/java -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'];
+			$new_command = $java_path . " -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'];
 			
 			exec($new_command, $output, $ret);
 			
@@ -296,7 +296,7 @@
 <body>
 <!-- Main menu -->
 <ul>
-	<li><p onClick="window.location.reload()"><img src="./img/parrot_reading.gif" width = 24/>Test API Admin<img src="./img/parrot_reading.gif" width = 24/></p></li>
+	<li><p onClick="window.location.reload()"><img src=<?php echo '"'.$parrot_url.'"' ?> width = 24/>Test API Admin<img src=<?php echo '"'.$parrot_url.'"' ?> width = 24/></p></li>
 	<li><a <?php echo ($_GET['mode'] == 0 || $_GET['mode'] == null ? 'class="active"' : ''); ?> href="./index.php?mode=0">API</a></li>
 	<li><a <?php echo ($_GET['mode'] == 1 ? 'class="active"' : ''); ?>href="./index.php?mode=1">Test API</a></li>
 	<li><a <?php echo ($_GET['mode'] == 2 ? 'class="active"' : ''); ?>href="./index.php?mode=2">Server</a></li>
@@ -304,7 +304,7 @@
 </ul>
 <!-- Main page -->
 <div style="margin-left:15%;padding:1px 16px;">
-<h1 style="text-align: center"><img src="./img/parrot_reading.gif" width = 48 onClick="window.location.reload()"/>Test API Admin<img src="./img/parrot_reading.gif" width = 48 onClick="window.location.reload()"/></h1>
+<h1 style="text-align: center"><img src=<?php echo '"'.$parrot_url.'"' ?> width = 48 onClick="window.location.reload()"/>Test API Admin<img src=<?php echo '"'.$parrot_url.'"' ?> width = 48 onClick="window.location.reload()"/></h1>
 <!-- Main table -->
 <table align="center" border=0 width = 1000 style = "border-collapse: collapse;">
 	<tr>
@@ -351,7 +351,7 @@
 		{
 			echo '
 		<td align = "right">
-			<a href = "./insert_APITest.php?mode='. $mode .'"><img src = "./img/add.png"/></a>
+			<a href = "./insert_APITest.php?mode='. $mode .'"><img src = "'.$add_button_url.'"/></a>
 		</td>';
 		}
 		?>
@@ -364,27 +364,27 @@
 		// add table header
 		$table_string = '
 	<tr>
-		<td width = "30%" style="padding: 8px;background-color: #AAAABA;border-radius: 6px 0 0 0;">URI</td>
-		<td width = "10%" style="padding: 8px;background-color: #AAAABA;">Method</td>
-		<td style="padding: 8px;background-color: #AAAABA;">Argument</td>
-		<td width = "1%" style="padding: 8px;background-color: #AAAABA;">X</td>
-		<td width = "1%" align = "center =" style="background-color: #AAAABA;">Modify</td>
-		<td width = "1%" align = "center =" style="background-color: #AAAABA;border-radius: 0 6px 0 0;">Test</td>
+		<td width = "30%" style="padding: 8px;background-color: '. $table_column_color .';border-radius: 6px 0 0 0;">URI</td>
+		<td width = "10%" style="padding: 8px;background-color: '. $table_column_color .';">Method</td>
+		<td style="padding: 8px;background-color: '. $table_column_color .';">Argument</td>
+		<td width = "1%" style="padding: 8px;background-color: '. $table_column_color .';">X</td>
+		<td width = "1%" align = "center =" style="background-color: '. $table_column_color .';">Modify</td>
+		<td width = "1%" align = "center =" style="background-color: '. $table_column_color .';border-radius: 0 6px 0 0;">Test</td>
 	</tr>';
 
 		// add entire API list
 		for($i = 0; $i < mysqli_num_rows($result); $i++)
 		{
-			$color = ($i % 2 == 0 ? '#DDDDEA' : '#EEEEFA');
+			$color = ($i % 2 == 0 ? $table_row_color_dark : $table_row_color_light);
 			$row = mysqli_fetch_array($result);
 			$table_string = $table_string . '
 	<tr>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['uri'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['method'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['params'] .'</td>
-		<td style="background-color: '. $color .';"><a href = "./index.php?mode=0&delete='.$row['api_id'].'&page='.$page.'"><img src="./img/x.png" href="./"/></a></td>
-		<td align = "center" style="background-color: '. $color .';"><a href = "./modify.php?mode=0&api_id='.$row['api_id'].'"><img src="./img/modify.png" href="./"/></a></td>
-		<td align = "center" style="background-color: '. $color .';"><a href = "./add_test.php?api_id='.$row['api_id'].'"><img src="./img/check.png" href="./"/></a></td>
+		<td style="background-color: '. $color .';"><a href = "./index.php?mode=0&delete='.$row['api_id'].'&page='.$page.'"><img src="'.$x_button_url.'" href="./"/></a></td>
+		<td align = "center" style="background-color: '. $color .';"><a href = "./modify.php?mode=0&api_id='.$row['api_id'].'"><img src="'.$modify_button_url.'" href="./"/></a></td>
+		<td align = "center" style="background-color: '. $color .';"><a href = "./add_test.php?api_id='.$row['api_id'].'"><img src="'.$check_button_url.'" href="./"/></a></td>
 	</tr>';
 		}
 	}
@@ -393,20 +393,20 @@
 		// add table header
 		$table_string = '
 	<tr>
-		<td width = "30%" style="padding: 8px;background-color: #AAAABA;border-radius: 6px 0 0 0;">URI</td>
-		<td width = "10%" style="padding: 8px;background-color: #AAAABA;">Method</td>
-		<td style="padding: 8px;background-color: #AAAABA;">Param</td>
-		<td style="padding: 8px;background-color: #AAAABA;">I</td>
-		<td style="padding: 8px;background-color: #AAAABA;">Period</td>
-		<td style="padding: 8px;background-color: #AAAABA;">On</td>
-		<td width = "1%" style="padding: 8px;background-color: #AAAABA;">X</td>
-		<td width = "1%" align = "center" style="background-color: #AAAABA;border-radius: 0 6px 0 0;">Modify</td>
+		<td width = "30%" style="padding: 8px;background-color: '. $table_column_color .';border-radius: 6px 0 0 0;">URI</td>
+		<td width = "10%" style="padding: 8px;background-color: '. $table_column_color .';">Method</td>
+		<td style="padding: 8px;background-color: '. $table_column_color .';">Param</td>
+		<td style="padding: 8px;background-color: '. $table_column_color .';">I</td>
+		<td style="padding: 8px;background-color: '. $table_column_color .';">Period</td>
+		<td style="padding: 8px;background-color: '. $table_column_color .';">On</td>
+		<td width = "1%" style="padding: 8px;background-color: '. $table_column_color .';">X</td>
+		<td width = "1%" align = "center" style="background-color: '. $table_column_color .';border-radius: 0 6px 0 0;">Modify</td>
 	</tr>';
 	
 		// add test API list
 		for($i = 0; $i < mysqli_num_rows($result); $i++)
 		{
-			$color = ($i % 2 == 0 ? '#DDDDEA' : '#EEEEFA');
+			$color = ($i % 2 == 0 ? $table_row_color_dark : $table_row_color_light);
 			$row = mysqli_fetch_array($result);
 			$table_string = $table_string . '
 	<tr>
@@ -415,9 +415,9 @@
 		<td style="background-color: '. $color .';">&nbsp;'. $row['test_params'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. ($row['immediately'] == 1 ? "O" : "X") .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['period'] .'</td>
-		<td style="background-color: '. $color .';">&nbsp;'. ($row['is_running'] == 1 ? '<a href="./index.php?mode=1&page='.$page.'&column='.$_GET['column'].'&search_key='.$_GET['search_key'].'&toggle=0&api_id='.$row['test_api_id'].'&uri='.$row['server_url'] . $row['uri'].'" ><img src="./img/on.png" width = 28/></a>' : '<a href="./index.php?mode=1&page='.$page.'&column='.$_GET['column'].'&search_key='.$_GET['search_key'].'&toggle=1&api_id='.$row['test_api_id'].'&uri='.$row['server_url'] . $row['uri'].'"><img src="./img/off.png" width = 28/></a>') .'</td>
-		<td style="background-color: '. $color .';"><a href = "./index.php?mode=1&delete='.$row['test_api_id'].'&page='.$page.'&uri='.$row['server_url'] . $row['uri'].'"><img src="./img/x.png" href="./" width = 28/></a></td>
-		<td align = "center" style="background-color: '. $color .';"><a href = "./modify.php?mode=1&api_id='.$row['test_api_id'].'&uri='.$row['server_url'] . $row['uri'].'"><img src="./img/modify.png" href="./" width = 28/></a></td>
+		<td style="background-color: '. $color .';">&nbsp;'. ($row['is_running'] == 1 ? '<a href="./index.php?mode=1&page='.$page.'&column='.$_GET['column'].'&search_key='.$_GET['search_key'].'&toggle=0&api_id='.$row['test_api_id'].'&uri='.$row['server_url'] . $row['uri'].'" ><img src="'.$on_button_url.'" width = 28/></a>' : '<a href="./index.php?mode=1&page='.$page.'&column='.$_GET['column'].'&search_key='.$_GET['search_key'].'&toggle=1&api_id='.$row['test_api_id'].'&uri='.$row['server_url'] . $row['uri'].'"><img src="./img/off.png" width = 28/></a>') .'</td>
+		<td style="background-color: '. $color .';"><a href = "./index.php?mode=1&delete='.$row['test_api_id'].'&page='.$page.'&uri='.$row['server_url'] . $row['uri'].'"><img src="'.$x_button_url.'" href="./" width = 28/></a></td>
+		<td align = "center" style="background-color: '. $color .';"><a href = "./modify.php?mode=1&api_id='.$row['test_api_id'].'&uri='.$row['server_url'] . $row['uri'].'"><img src="'.$modify_button_url.'" href="./" width = 28/></a></td>
 	</tr>';
 		}
 	}
@@ -426,23 +426,23 @@
 		// add table header
 		$table_string = '
 	<tr>
-		<td width = "30%" style="padding: 8px;background-color: #AAAABA;border-radius: 6px 0 0 0;">Server Name</td>
-		<td style="padding: 8px;background-color: #AAAABA;">Server URL</td>
-		<td style="padding: 8px;background-color: #AAAABA;">Server IP</td>
-		<td width = "1%"  style="padding: 8px;background-color: #AAAABA;border-radius: 0 6px 0 0;">X</td>
+		<td width = "30%" style="padding: 8px;background-color: '. $table_column_color .';border-radius: 6px 0 0 0;">Server Name</td>
+		<td style="padding: 8px;background-color: '. $table_column_color .';">Server URL</td>
+		<td style="padding: 8px;background-color: '. $table_column_color .';">Server IP</td>
+		<td width = "1%"  style="padding: 8px;background-color: '. $table_column_color .';border-radius: 0 6px 0 0;">X</td>
 	</tr>';
 	
 		// add entire API list
 		for($i = 0; $i < mysqli_num_rows($result); $i++)
 		{
-			$color = ($i % 2 == 0 ? '#DDDDEA' : '#EEEEFA');
+			$color = ($i % 2 == 0 ? $table_row_color_dark : $table_row_color_light);
 			$row = mysqli_fetch_array($result);
 			$table_string = $table_string . '
 	<tr>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['server_name'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['server_url'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['server_ip'] .'</td>
-		<td style="background-color: '. $color .';"><a href = "./index.php?mode=2&delete='.$row['server_id'].'&page='.$page.'"><img src="./img/x.png" href="./"/></a></td>
+		<td style="background-color: '. $color .';"><a href = "./index.php?mode=2&delete='.$row['server_id'].'&page='.$page.'"><img src="'.$x_button_url.'" href="./"/></a></td>
 	</tr>';
 		}
 	}
@@ -451,20 +451,20 @@
 		// add table header
 		$table_string = '
 	<tr>
-		<td width = "20%" style="padding: 8px;background-color: #AAAABA;border-radius: 6px 0 0 0;">Server Name</td>
-		<td style="padding: 8px;background-color: #AAAABA;">uri</td>
-		<td style="padding: 8px;background-color: #AAAABA;">method	</td>
-		<td style="padding: 8px;background-color: #AAAABA;">request time</td>
-		<td style="padding: 8px;background-color: #AAAABA;">response time</td>
-		<td style="padding: 8px;background-color: #AAAABA;">elapsed time</td>
-		<td style="padding: 8px;background-color: #AAAABA;">response</td>
-		<td width = "1%"  style="padding: 8px;background-color: #AAAABA;border-radius: 0 6px 0 0;">X</td>
+		<td width = "20%" style="padding: 8px;background-color: '. $table_column_color .';border-radius: 6px 0 0 0;">Server Name</td>
+		<td style="padding: 8px;background-color: '. $table_column_color .';">uri</td>
+		<td style="padding: 8px;background-color: '. $table_column_color .';">method	</td>
+		<td style="padding: 8px;background-color: '. $table_column_color .';">request time</td>
+		<td style="padding: 8px;background-color: '. $table_column_color .';">response time</td>
+		<td style="padding: 8px;background-color: '. $table_column_color .';">elapsed time</td>
+		<td style="padding: 8px;background-color: '. $table_column_color .';">response</td>
+		<td width = "1%"  style="padding: 8px;background-color: '. $table_column_color .';border-radius: 0 6px 0 0;">X</td>
 	</tr>';
 	
 		// add entire API list
 		for($i = 0; $i < mysqli_num_rows($result); $i++)
 		{
-			$color = ($i % 2 == 0 ? '#DDDDEA' : '#EEEEFA');
+			$color = ($i % 2 == 0 ? $table_row_color_dark : $table_row_color_light);
 			$row = mysqli_fetch_array($result);
 			$table_string = $table_string . '
 	<tr>
@@ -475,7 +475,7 @@
 		<td style="background-color: '. $color .';">&nbsp;'. $row['response_time'] .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['elapsed_time_nano'] / 1000000 .'</td>
 		<td style="background-color: '. $color .';">&nbsp;'. $row['response_code'] .'</td>
-		<td style="background-color: '. $color .';"><a href = "./index.php?mode=3&delete='.$row['log_id'].'&page='.$page.'"><img src="./img/x.png" /></a></td>
+		<td style="background-color: '. $color .';"><a href = "./index.php?mode=3&delete='.$row['log_id'].'&page='.$page.'"><img src="'.$x_button_url.'" /></a></td>
 	</tr>';
 		}
 	}
@@ -495,7 +495,7 @@
 	
 	// add Prev button
 	$page_string = '
-		<a href="./index.php?mode='.$mode.'&page=' .($page - 1 >= 0 ? $page - 1 : 0). $search_get_data .'" style="text-decoration:none"><img src="./img/left.png" /></a> ';
+		<a href="./index.php?mode='.$mode.'&page=' .($page - 1 >= 0 ? $page - 1 : 0). $search_get_data .'" style="text-decoration:none"><img src="'.$left_button_url.'" /></a> ';
 
 	// add page number
 	for($i = floor($page / $page_list_num) * $page_list_num; $i < min($num_pages + 1, floor($page / $page_list_num) * $page_list_num + $page_list_num); $i++)
@@ -513,7 +513,7 @@
 	}
 	// add Next button
 	$page_string = $page_string . '
-		<a href="./index.php?mode='.$mode.'&page=' .($page + 1 <= $num_pages ? $page + 1 : $num_pages) . $search_get_data . '" style="text-decoration:none"><img src="./img/right.png"/></a>';
+		<a href="./index.php?mode='.$mode.'&page=' .($page + 1 <= $num_pages ? $page + 1 : $num_pages) . $search_get_data . '" style="text-decoration:none"><img src="'.$right_button_url.'"/></a>';
 	
 	// echo actual page string
 	echo $page_string;
