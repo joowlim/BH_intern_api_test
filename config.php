@@ -19,6 +19,7 @@ $x_button_url = "./img/x.png";
 $modify_button_url = "./img/modify.png";
 $check_button_url = "./img/check.png";
 $on_button_url = "./img/on.png";
+$off_button_url = "./img/off.png";
 $left_button_url = "./img/left.png";
 $right_button_url = "./img/right.png";
 ?>
