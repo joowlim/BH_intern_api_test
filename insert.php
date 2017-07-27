@@ -18,20 +18,19 @@ $name=isset($_POST['name']) ? $_POST['name'] : '';
 $address=isset($_POST['address']) ? $_POST['address'] : '';  
 
 if ($name !="" and $address !="" ){   
-  
-    $sql="insert into Person(name,address) values('$name','$address')";  
-    $result=mysqli_query($link,$sql);  
+  $sql="insert into Person(name,address) values('$name','$address')";  
+  $result=mysqli_query($link,$sql);  
 
-    if($result){  
-       echo "SQLë success";  
-    }  
-    else{  
-       echo "SQLë¬error : "; 
-       echo mysqli_error($link);
-    } 
- 
-} else {
-    echo "enter the data";
+  if($result){  
+    echo "SQLë success";  
+  }  
+  else{  
+    echo "SQLë¬error : "; 
+    echo mysqli_error($link);
+  } 
+} 
+else {
+  echo "enter the data";
 }
 
 
@@ -44,16 +43,13 @@ $android = strpos($_SERVER['HTTP_USER_AGENT'], "Android");
 
 if (!$android){
 ?>
-
 <html>
    <body>
-   
-      <form action="<?php $_PHP_SELF ?>" method="POST">
-         Name: <input type = "text" name = "name" />
-         Address: <input type = "text" name = "address" />
-         <input type = "submit" />
+      <form action = "<?php $_PHP_SELF ?>" method = "POST">
+        Name: <input type = "text" name = "name" />
+        Address: <input type = "text" name = "address" />
+        <input type = "submit" />
       </form>
-   
    </body>
 </html>
 <?php
