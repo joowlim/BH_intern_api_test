@@ -261,15 +261,15 @@
 		<?php
 			if($immediately == 1){
 				echo 
-			'<option value="1" selected="selected">즉시</option>'."\n";
+			'<option value = "1" selected = "selected" >즉시</option>'."\n";
 				echo 
-			'<option value="0">주기적으로</option>';
+			'<option value = "0" >주기적으로</option>';
 			}
 			else{
 				echo 
-			'<option value="1">즉시</option>'."\n";
+			'<option value = "1" >즉시</option>'."\n";
 				echo 
-			'<option value="0" selected="selected">주기적으로</option>';
+			'<option value = "0" selected = "selected" >주기적으로</option>';
 			}
 		
 		?> 
@@ -277,10 +277,10 @@
 	</p>
 	<?php
 		echo 
-	'<p id="period_p_tag">period :<select id="period" name="period">';
+	'<p id = "period_p_tag" >period :<select id = "period" name = "period" >';
 			for($i = 0;$i<count($period_list);$i++){
 				echo 
-		'<option value="' . $period_star_list[$i] . '" '. ($period_star_list[$i] == $period ? 'selected="selected"' : "") .'>' . 
+		'<option value = "' . $period_star_list[$i] . '" '. ($period_star_list[$i] == $period ? 'selected = "selected"' : "") .'>' . 
 		$period_list[$i] . '</option>';
 				
 			}
