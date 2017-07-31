@@ -271,7 +271,7 @@
 			$search_where_clause = "WHERE " . $_GET['column'] . " LIKE '%" . $_GET['search_key'] . "%'";
 			
 			$sql = "SELECT * FROM test_log, api_list, server_list " . $search_where_clause . " AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
-			$num_sql = "SELECT COUNT(*) FROM test_log " . $search_where_clause;
+			$num_sql = "SELECT COUNT(*) FROM test_log, api_list, server_list " . $search_where_clause . " AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id";
 		}
 		else
 		{
