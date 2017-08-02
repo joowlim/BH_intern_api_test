@@ -72,6 +72,15 @@
 		color: white;
 	}
 	</style>
+	<script>
+	function change_search_field(sel)
+	{
+		if(sel.value == "date")
+			document.getElementById('search_field').innerHTML = '<input style = "width: 30%" type = "datetime-local" name = "date-start" />~<input style = "width: 30%" type = "datetime-local" name = "date-end" />';
+		else
+			document.getElementById('search_field').innerHTML = '<input style = "width: 60%" type = "text" name = "search_key" />';
+	}
+	</script>
 	<?php
 
 	// Define global variables
@@ -273,6 +282,14 @@
 			$sql = "SELECT * FROM test_log, api_list, server_list " . $search_where_clause . " AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
 			$num_sql = "SELECT COUNT(*) FROM test_log, api_list, server_list " . $search_where_clause . " AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id";
 		}
+		elseif($_GET['column'] == "date")
+		{
+			$date_start = date('d/m/Y H:i:00', strtotime($_GET['date-start']));
+			$date_end = date('d/m/Y H:i:00', strtotime($_GET['date-end']));
+			
+			$sql = "SELECT * FROM test_log, api_list, server_list WHERE (STR_TO_DATE(request_time, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE('" . $date_start . "', '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE('" . $date_end . "', '%d/%m/%Y %H:%i:%s')) AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
+			$num_sql = "SELECT COUNT(*) FROM test_log, api_list, server_list WHERE (STR_TO_DATE(request_time, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE('" . $date_start . "', '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE('" . $date_end . "', '%d/%m/%Y %H:%i:%s')) AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id";
+		}
 		else
 		{
 			$sql = "SELECT * FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON test_log.server_id = server_list.server_id ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
@@ -334,15 +351,32 @@
 				elseif($mode == 3)
 				{
 				echo'
-				<select style = "width: 15%" name = "column">
+				<select style = "width: 15%" name = "column" onchange="change_search_field(this)">
 					<option value = "server_name" ' . ($_GET['column'] == "server_name" ? 'selected = "selected"' : '') . '>Server</option>
-					<option value = "method" ' . ($_GET['column'] == "server_url" ? 'selected = "selected"' : '') . '>Method</option>
-					<option value = "uri" ' . ($_GET['column'] == "server_ip" ? 'selected = "selected"' : '') . '>URI</option>
+					<option value = "method" ' . ($_GET['column'] == "method" ? 'selected = "selected"' : '') . '>Method</option>
+					<option value = "uri" ' . ($_GET['column'] == "uri" ? 'selected = "selected"' : '') . '>URI</option>
+					<option value = "date" ' . ($_GET['column'] == "date" ? 'selected = "selected"' : '') . '>Date</option>
 				</select>
 				';
 				}
 				?>
-				<input style = "width: 60%" type = "text" name = "search_key" value = <?php echo '"' . $_GET['search_key'] . '"' ?> />
+				<div id='search_field' style="display: inline">
+					<?php 
+						if($_GET['column'] == "date")
+						{
+					?>
+					<input style = "width: 30%" type = "datetime-local" name = "date-start" />~
+					<input style = "width: 30%" type = "datetime-local" name = "date-end" />
+					<?php
+						}
+						else
+						{
+					?>
+					<input style = "width: 60%" type = "text" name = "search_key" value = <?php echo '"' . $_GET['search_key'] . '"' ?> />
+					<?php
+						}
+					?>
+				</div>
 				<button style = "width: 20%" type = "submit" class = "button">Search</button>
 			</form>
 		</td>
@@ -502,8 +536,16 @@
 	{
 		if($i != $page)
 		{
-			$page_string = $page_string . '
+			if($_GET['column'] != "date")
+			{
+				$page_string = $page_string . '
 		<a href = "./index.php?mode=' . $mode . '&page=' . $i . $search_get_data . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';
+			}
+			else
+			{
+				$page_string = $page_string . '
+		<a href = "./index.php?mode=' . $mode . '&page=' . $i . $search_get_data . '&column=date&date-start=' . $_GET['date-start'] . '&date-end=' . $_GET['date-end'] . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';			
+			}
 		}
 		else
 		{
