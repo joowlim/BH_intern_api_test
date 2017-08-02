@@ -503,12 +503,12 @@
 		if($i != $page)
 		{
 			$page_string = $page_string . '
-		<a href = "./index.php?mode=' . $mode . '&page=' . $i . $search_get_data . '" style = "text-decoration: none;color: blue">' . $i . ' </a>';
+		<a href = "./index.php?mode=' . $mode . '&page=' . $i . $search_get_data . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';
 		}
 		else
 		{
 			$page_string = $page_string .
-		$i . ' ';
+		($i + 1) . ' ';
 		}
 	}
 	// add Next button
