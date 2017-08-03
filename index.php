@@ -151,7 +151,13 @@
 	 		echo '<script>alert("api modify from scheduler successed")</script>';
 	 	}
 	}
+	function prettyPeriod($period) {
+		$min = $period % 60;
+		$hour = ($period / 60) % 24;
+		$day = intval(($period / 60) / 24);
 
+		return ($day != null ? $day . "일 " : "") . ($hour != null ? $hour . "시간 " : "") . $min . "분";
+	}
 	// Delete rows by delete button
 	if($_GET['delete'] != null)
 	{
@@ -478,7 +484,7 @@
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['method'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['test_params'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . ($row['immediately'] == 1 ? "O" : "X") . '</td>
-		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['period'] . '</td>
+		<td style = "background-color: ' . $color . ';">&nbsp;' . prettyPeriod($row['period']) . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . ($row['is_running'] == 1 ? '<a href="./index.php?mode=1&page=' . $page . '&column=' . $_GET['column'] . '&search_key=' . $_GET['search_key'] . '&toggle=0&api_id=' . $row['test_api_id'] . '&uri=' . $row['server_url'] . $row['uri'] . '" ><img src = "' . $on_button_url . '" width = 28/></a>' : '<a href = "./index.php?mode=1&page=' . $page . '&column=' . $_GET['column'] . '&search_key=' . $_GET['search_key'] . '&toggle=1&api_id=' . $row['test_api_id'] . '&uri=' . $row['server_url'] . $row['uri'] . '"><img src = "'. $off_button_url .'" width = 28/></a>') . '</td>
 		<td style = "background-color: ' . $color . ';"><a onclick="delete_row(' . $mode . ', ' . $row['test_api_id'] .')"><img src = "' . $x_button_url . '" width = 28/></a></td>
 		<td align = "center" style = "background-color: ' . $color . ';"><a href = "./modify.php?mode=1&api_id=' . $row['test_api_id'] . '&uri=' . $row['server_url'] . $row['uri'] . '"><img src = "' . $modify_button_url . '" width = 28/></a></td>
