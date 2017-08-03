@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
-
 <?php
-
 	$mode = $_GET['mode'];
 
 	// Connect to the db
@@ -11,11 +9,8 @@
 
 	// Define global variables
 	include("./config.php");
-	// Define crontab functions
-	include("./crontab.php");
 
 	if($mode == 0){
-		
 ?>
 
 <head>
@@ -24,8 +19,6 @@
 	<link rel = "stylesheet" href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" >
 	<script src = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js" />
 <?php
-
-
 	$api_id = $_GET['api_id'];
 	$sql = "SELECT * FROM api_list WHERE api_id=". $api_id ;
 
@@ -50,10 +43,7 @@
 	}
 
 ?>
-
 	<script>
-
-
 	function sendModifyRequest(id, uri, method, params){
 
 		if(uri ===""){
@@ -82,12 +72,7 @@
 			}
 		});
 	}
-
-
 	</script>
-	
-	
-	
 </head>
 
 <body style = "margin-top: 30px" >
@@ -101,7 +86,7 @@
 
 <form class = "form-inline">
 <p>id : <?php echo $api_id ?></p>
-<p>uri : <input class = "form-control" id = "uri" value = <?php echo "\"".$data['uri']."\""?>></input></p>
+<p>uri : <input class = "form-control" id = "uri" value = <?php echo "\"".$data['uri']."\""?> /></p>
 <p>method : 
 	<select class = "form-control" id = "method_list" name = "method_list">
 	<?php
@@ -117,7 +102,6 @@
 			<option value = "PATCH" '. ($data['method'] == "PATCH" ? 'selected = "selected"' : "") .' >PATCH</option>	
 		';
 	?>
-
 	</select>
 </p>
 
@@ -174,7 +158,7 @@
 <script>
 
 	function selectListener() {
-		if($('#immediately').val()=="1"){
+		if($('#immediately').val() == "1"){
 			$('#period_p_tag').hide();
 		}
 		else{
@@ -212,7 +196,7 @@
 			type:"GET",
 			data : data,
 			success:function(err){
-				//console.log(err);
+				console.log(err);
 				if(err == 0){
 					alert("실패");
 				}
@@ -239,8 +223,8 @@
 <div class = "container-fluid" style = "width: 300px; height: 400px; margin: auto;" >
 <form class="form-inline">
 	<p>test api id : <?php echo $api_id;?></p>
-	<p>server URL : <?php echo $server_url ?>
-	<p>API URI : <?php echo $uri ?>
+	<p>server URL : <?php echo $server_url ?></p>
+	<p>API URI : <?php echo $uri ?></p>
 	<p>params : <input class = "form-control" id = "params" value = '<?php echo $test_params ?>'> </p>
 	<p>테스팅 타이밍 : 
 		<select class = "form-control" onchange = "selectListener()" id = "immediately" name = "immediately">

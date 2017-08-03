@@ -115,8 +115,6 @@
 
 	// Define global variables
 	include("./config.php");
-	// Define crontab functions
-	include("./crontab.php");
 	
 	// Connect to the db
 	$link = mysqli_connect('localhost', 'root', 'root', 'API_TEST');
@@ -124,6 +122,7 @@
 
 	$mode = 0;
 
+	/*
 	function crontab_del_ins_mod_test_api($test_api_id, $op, $uri, $link, $jar_path)
 	{
 		$t_sql = "SELECT * FROM test_api_list, api_list WHERE test_api_id = " . $test_api_id . " AND test_api_list.api_id = api_list.api_id";
@@ -151,6 +150,8 @@
 	 		echo '<script>alert("api modify from scheduler successed")</script>';
 	 	}
 	}
+	*/
+	
 	function prettyPeriod($period) {
 		$min = $period % 60;
 		$hour = ($period / 60) % 24;
@@ -161,11 +162,6 @@
 	// Delete rows by delete button
 	if($_GET['delete'] != null)
 	{
-		// Remove data from crontab
-		if($_GET['mode'] == 1)
-		{
-			crontab_del_ins_mod_test_api($_GET['delete'], 0, $_GET['uri'], $link, $jar_path);
-		}
 		// Remove data from db
 		if($_GET['mode'] == 0)
 		{
@@ -212,16 +208,6 @@
 			$crontab_list = exec("crontab -l");
 
 			$new_command = $t_row['period'] . $java_path . " -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'];
-			
-			if($_GET['toggle'] == 0)
-			{
-				deleteCommand($new_command);
-			}
-			else
-			{
-				insertCommand($new_command);
-			}
-			
 			mysqli_query($link, $sql);
 			
 			if(mysqli_affected_rows($link) == 1)
