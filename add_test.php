@@ -177,7 +177,7 @@ function getServer($db_host, $db_user, $db_passwd, $db_name){
 		</select>
 	</div>
 	<div>
-		<label for = "period">period :</label>
+		<label for = "period">period(분) :</label>
 		<input type = "text" name = "period" />
 	</div>
 	<h3>파라미터 입력하는 곳입니다.</h3>
