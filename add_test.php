@@ -179,7 +179,7 @@ function getServer($db_host, $db_user, $db_passwd, $db_name){
 	<p align = "center"> Register test api : </p>
 	<div>
 		<label for = "server">서버:</label>
-		<select name = "server" <?php echo 'value = "' . $_POST['server'] . '"'; ?>>
+		<select name = "server">
 		<?php
 			$server_list = getServer($db_host, $db_user, $db_passwd, $db_name);
 			for ($i = 0; $i < count($server_list); $i++) {
