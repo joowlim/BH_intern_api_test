@@ -70,8 +70,13 @@
 	li a.active:hover {
 		background-color: #6DD071;
 		color: white;
+		
+	}
+	a:hover{
+		cursor: pointer;
 	}
 	</style>
+	<script src="//code.jquery.com/jquery.min.js"></script>
 	<script>
 	function change_search_field(sel)
 	{
@@ -79,6 +84,31 @@
 			document.getElementById('search_field').innerHTML = '<input style = "width: 30%" type = "datetime-local" name = "date-start" />~<input style = "width: 30%" type = "datetime-local" name = "date-end" />';
 		else
 			document.getElementById('search_field').innerHTML = '<input style = "width: 60%" type = "text" name = "search_key" />';
+	}
+	function delete_row(mode,id)
+	{
+		if(confirm("삭제하시겠습니까?"))
+		{
+			console.log(mode);
+			console.log(id);
+			$.ajax({
+				url : "./delete.php",
+				data : {
+					mode : mode,
+					id : id
+				},
+				success : function(result){
+					if(result == 0)
+						alert("삭제를 실패했습니다");
+					else
+						alert("삭제를 성공했습니다!");
+					location.reload();
+				},
+				error : function(e){
+					alert("삭제를 실패했습니다");
+				}
+			});
+		}
 	}
 	</script>
 	<?php
@@ -416,7 +446,7 @@
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['uri'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['method'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['params'] . '</td>
-		<td style = "background-color: ' . $color . ';"><a href = "./index.php?mode=0&delete=' . $row['api_id'] . '&page=' . $page . '"><img src = "' . $x_button_url . '" /></a></td>
+		<td style = "background-color: ' . $color . ';"><a onclick="delete_row(' . $mode . ', ' . $row['api_id'] .')"><img src = "' . $x_button_url . '" /></a></td>
 		<td align = "center" style = "background-color: ' . $color . ';"><a href = "./modify.php?mode=0&api_id=' . $row['api_id'] . '"><img src = "' . $modify_button_url . '" /></a></td>
 		<td align = "center" style = "background-color: ' . $color . ';"><a href = "./add_test.php?api_id=' . $row['api_id'] . '"><img src="' . $check_button_url . '" /></a></td>
 	</tr>';
@@ -450,7 +480,7 @@
 		<td style = "background-color: ' . $color . ';">&nbsp;' . ($row['immediately'] == 1 ? "O" : "X") . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['period'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . ($row['is_running'] == 1 ? '<a href="./index.php?mode=1&page=' . $page . '&column=' . $_GET['column'] . '&search_key=' . $_GET['search_key'] . '&toggle=0&api_id=' . $row['test_api_id'] . '&uri=' . $row['server_url'] . $row['uri'] . '" ><img src = "' . $on_button_url . '" width = 28/></a>' : '<a href = "./index.php?mode=1&page=' . $page . '&column=' . $_GET['column'] . '&search_key=' . $_GET['search_key'] . '&toggle=1&api_id=' . $row['test_api_id'] . '&uri=' . $row['server_url'] . $row['uri'] . '"><img src = "'. $off_button_url .'" width = 28/></a>') . '</td>
-		<td style = "background-color: ' . $color . ';"><a href = "./index.php?mode=1&delete=' . $row['test_api_id'] . '&page=' . $page . '&uri=' . $row['server_url'] . $row['uri'] . '"><img src = "' . $x_button_url . '" width = 28/></a></td>
+		<td style = "background-color: ' . $color . ';"><a onclick="delete_row(' . $mode . ', ' . $row['test_api_id'] .')"><img src = "' . $x_button_url . '" width = 28/></a></td>
 		<td align = "center" style = "background-color: ' . $color . ';"><a href = "./modify.php?mode=1&api_id=' . $row['test_api_id'] . '&uri=' . $row['server_url'] . $row['uri'] . '"><img src = "' . $modify_button_url . '" width = 28/></a></td>
 	</tr>';
 		}
@@ -476,7 +506,7 @@
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['server_name'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['server_url'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['server_ip'] . '</td>
-		<td style = "background-color: ' . $color . ';"><a href = "./index.php?mode=2&delete=' . $row['server_id'] . '&page=' . $page . '"><img src = "' . $x_button_url . '" /></a></td>
+		<td style = "background-color: ' . $color . ';"><a onclick="delete_row(' . $mode . ', ' . $row['server_id'] .')"><img src = "' . $x_button_url . '" /></a></td>
 	</tr>';
 		}
 	}
@@ -509,7 +539,7 @@
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['response_time'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['elapsed_time_nano'] / 1000000 . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['response_code'] . '</td>
-		<td style = "background-color: ' . $color . ';"><a href = "./index.php?mode=3&delete=' . $row['log_id'] . '&page=' . $page . '"><img src="' . $x_button_url . '" /></a></td>
+		<td style = "background-color: ' . $color . ';"><a onclick="delete_row(' . $mode . ', ' . $row['log_id'] .')"><img src="' . $x_button_url . '" /></a></td>
 	</tr>';
 		}
 	}
