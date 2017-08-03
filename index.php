@@ -309,16 +309,16 @@
 		{
 			$search_where_clause = "WHERE " . $_GET['column'] . " LIKE '%" . $_GET['search_key'] . "%'";
 			
-			$sql = "SELECT * FROM test_log, api_list, server_list " . $search_where_clause . " AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
-			$num_sql = "SELECT COUNT(*) FROM test_log, api_list, server_list " . $search_where_clause . " AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id";
+			$sql = "SELECT * FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON test_log.server_id = server_list.server_id " . $search_where_clause . " ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
+			$num_sql = "SELECT COUNT(*) FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON test_log.server_id = server_list.server_id " . $search_where_clause;
 		}
 		elseif($_GET['column'] == "date")
 		{
-			$date_start = date('d/m/Y H:i:00', strtotime($_GET['date-start']));
-			$date_end = date('d/m/Y H:i:00', strtotime($_GET['date-end']));
+			$date_start = $_GET['date-start'];
+			$date_end = $_GET['date-end'];
 			
-			$sql = "SELECT * FROM test_log, api_list, server_list WHERE (STR_TO_DATE(request_time, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE('" . $date_start . "', '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE('" . $date_end . "', '%d/%m/%Y %H:%i:%s')) AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
-			$num_sql = "SELECT COUNT(*) FROM test_log, api_list, server_list WHERE (STR_TO_DATE(request_time, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE('" . $date_start . "', '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE('" . $date_end . "', '%d/%m/%Y %H:%i:%s')) AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id";
+			$sql = "SELECT * FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON test_log.server_id = server_list.server_id WHERE (STR_TO_DATE(request_time, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE('" . $date_start . "', '%Y-%m-%dT%H:%i') AND STR_TO_DATE('" . $date_end . "', '%Y-%m-%dT%H:%i')) ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
+			$num_sql = "SELECT COUNT(*) FROM test_log WHERE (STR_TO_DATE(request_time, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE('" . $date_start . "', '%Y-%m-%dT%H:%i') AND STR_TO_DATE('" . $date_end . "', '%Y-%m-%dT%H:%i'))";
 		}
 		else
 		{
@@ -558,9 +558,16 @@
 	$search_get_data = ($_GET['search_key'] != null ? '&column=' . $_GET['column'] . '&search_key=' . $_GET['search_key'] : '');
 	
 	// add Prev button
+	if($_GET['column'] != "date")
+	{
 	$page_string = '
 		<a href = "./index.php?mode=' . $mode . '&page=' . ($page - 1 >= 0 ? $page - 1 : 0) . $search_get_data .'" style = "text-decoration:none"><img src="' . $left_button_url . '" /></a> ';
-
+	}
+	else
+	{
+	$page_string = '
+		<a href = "./index.php?mode=' . $mode . '&page=' . ($page - 1 >= 0 ? $page - 1 : 0) . '&column=date&date-start=' . $_GET['date-start'] . '&date-end=' . $_GET['date-end'] . '" style = "text-decoration:none"><img src="' . $left_button_url . '" /></a> ';
+	}
 	// add page number
 	for($i = floor($page / $page_list_num) * $page_list_num; $i < min($num_pages + 1, floor($page / $page_list_num) * $page_list_num + $page_list_num); $i++)
 	{
@@ -574,7 +581,7 @@
 			else
 			{
 				$page_string = $page_string . '
-		<a href = "./index.php?mode=' . $mode . '&page=' . $i . $search_get_data . '&column=date&date-start=' . $_GET['date-start'] . '&date-end=' . $_GET['date-end'] . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';			
+		<a href = "./index.php?mode=' . $mode . '&page=' . $i . '&column=date&date-start=' . $_GET['date-start'] . '&date-end=' . $_GET['date-end'] . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';			
 			}
 		}
 		else
@@ -584,9 +591,16 @@
 		}
 	}
 	// add Next button
+	if($_GET['column'] != "date")
+	{
 	$page_string = $page_string . '
 		<a href = "./index.php?mode=' . $mode . '&page=' . ($page + 1 <= $num_pages ? $page + 1 : $num_pages) . $search_get_data . '" style = "text-decoration: none"><img src = "' . $right_button_url . '"/></a>';
-	
+	}
+	else
+	{
+	$page_string = $page_string . '
+		<a href = "./index.php?mode=' . $mode . '&page=' . ($page + 1 <= $num_pages ? $page + 1 : $num_pages) . '&column=date&date-start=' . $_GET['date-start'] . '&date-end=' . $_GET['date-end'] . '" style = "text-decoration: none"><img src = "' . $right_button_url . '"/></a>';	
+	}
 	// echo actual page string
 	echo $page_string;
 	?>
