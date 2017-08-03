@@ -108,17 +108,17 @@
 		if ($op == 1)
 		{
 			insertCommand($new_command);	
-			echo '<script>alert("api insert successed")</script>';
+			echo '<script>alert("api insert into scheduler successed")</script>';
 		}
 	 	elseif ($op == 0)
 	 	{
 			deleteCommand($new_command);
-			echo '<script>alert("api delete successed")</script>';
+			echo '<script>alert("api delete from scheduler successed")</script>';
 	 	}
 	 	elseif ($op == 2) 
 	 	{
 	 		modifyCommand($crontab_list, $new_command);
-	 		echo '<script>alert("api modify successed")</script>';
+	 		echo '<script>alert("api modify from scheduler successed")</script>';
 	 	}
 	}
 

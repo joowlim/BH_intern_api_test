@@ -68,8 +68,9 @@ function insert($db_host,$db_user,$db_passwd,$db_name,$insertArr){
 	}
 	$intimm = (int)$insertArr[3];
 	$intper = $insertArr[4];
+  
+	$insert = mysqli_query($conn,"insert into test_api_list (server_id, api_id, test_params, immediately, period) Values('$insertArr[0]','$insertArr[1]','$insertArr[2]','$intimm', $intper)");
 
-	$insert = mysqli_query($conn,"insert into test_api_list (server_id, api_id, test_params, immediately, period) Values('$insertArr[0]','$insertArr[1]','$insertArr[2]','$intimm', '$intper')");
 	if(!$insert){
 		echo '<script>alert("Failed to insert")</script>';
 	}
@@ -94,28 +95,6 @@ function han ($s) { return reset(json_decode('{"s":"'.$s.'"} ')); }
 
 function to_han ($str) { return preg_replace('/(\\\u[a-f0-9]+)+/e','han("$0")',$str); }
 
-$period_list = array('1분마다', '2분마다', '3분마다', '4분마다', '5분마다', '6분마다', '10분마다', '12분마다',
-						'15분마다', '20분마다', '30분마다', '1시간마다', '2시간마다', '3시간마다', '4시간마다', '6시간마다', '8시간마다', '12시간마다', '하루마다');
-
-function getCrontabPeriod($period)
-{
-    if (strpos($period, '분마다') !== false)
-    {
-    	return "*/" . substr($period, 0, -9) . " * * * * ";
-    }
-    elseif (strpos($period, '시간마다') !== false)
-    {
-    	return "0 */" . substr($period, 0, -12) . " * * * ";
-    }
-    elseif (strpos($period, '하루마다') !== false) 
-    {
-    	return "0 0 * * * ";
-    }
-    else
-    {
-    	return "* * * * * ";
-    }
-}
 function getServer($db_host, $db_user, $db_passwd, $db_name){
 	$server_list = array();
 	$conn = mysqli_connect($db_host,$db_user,$db_passwd,$db_name);
@@ -198,16 +177,8 @@ function getServer($db_host, $db_user, $db_passwd, $db_name){
 		</select>
 	</div>
 	<div>
-		<label for = "period">period :</label>
-		<select name = "period">
-				<?php
-					$i = 0;
-					for(;$i<count($period_list);$i++){
-						echo '
-			<option value="' . $period_list[$i] . '"' . ($_POST['period'] == $period_list[$i] ? 'selected="selected"' : '') . '>' . $period_list[$i] . '</option>';
-					}
-				?>
-		</select>
+		<label for = "period">period(분) :</label>
+		<input type = "text" name = "period" />
 	</div>
 	<h3>파라미터 입력하는 곳입니다.</h3>
 
@@ -297,7 +268,7 @@ function getServer($db_host, $db_user, $db_passwd, $db_name){
 			array_push($insertArr,NULL);
 		}
 		else{
-			array_push($insertArr,getCrontabPeriod($_POST['period']));
+			array_push($insertArr,$_POST['period']);
 		}
 		insert($db_host,$db_user,$db_passwd,$db_name,$insertArr);
 	}
