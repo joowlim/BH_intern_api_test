@@ -1,10 +1,8 @@
 <?php 
-$db_host = "localhost";
-$db_user = "root";
-$db_passwd = "root";
-$db_name = "API_TEST";
-function take_api($db_host,$db_user,$db_passwd,$db_name){
-	$conn = mysqli_connect($db_host,$db_user,$db_passwd,$db_name);
+	include("./db_account_info.php");
+
+function take_api($db_server,$db_user,$db_password,$db_schema){
+	$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
 	mysqli_set_charset($conn, 'utf8');
 
 	if(mysqli_connect_errno($conn)){
@@ -27,10 +25,10 @@ function take_api($db_host,$db_user,$db_passwd,$db_name){
 	return $api;
 }
 
-function take_server($db_host,$db_user,$db_passwd,$db_name,$server_url,$server_ip){
-	$conn = mysqli_connect($db_host,$db_user,$db_passwd,$db_name);
-
+function take_server($db_server,$db_user,$db_password,$db_schema,$server_url,$server_ip){
+	$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
 	mysqli_set_charset($conn, 'utf8');
+
 	if(mysqli_connect_errno($conn)){
 	    echo "데이터베이스 연결 실패: ".mysqli_connect_error();
 	}
@@ -57,8 +55,8 @@ function take_server($db_host,$db_user,$db_passwd,$db_name,$server_url,$server_i
 	return $serverid;
 }
 
-function insert($db_host,$db_user,$db_passwd,$db_name,$insertArr){
-	$conn = mysqli_connect($db_host,$db_user,$db_passwd,$db_name);
+function insert($db_server,$db_user,$db_password,$db_schema,$insertArr){
+	$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
 	mysqli_set_charset($conn, 'utf8');
 
 	if(mysqli_connect_errno($conn)){
@@ -95,9 +93,9 @@ function han ($s) { return reset(json_decode('{"s":"'.$s.'"} ')); }
 
 function to_han ($str) { return preg_replace('/(\\\u[a-f0-9]+)+/e','han("$0")',$str); }
 
-function getServer($db_host, $db_user, $db_passwd, $db_name){
+function getServer($db_server, $db_user, $db_password, $db_schema){
 	$server_list = array();
-	$conn = mysqli_connect($db_host,$db_user,$db_passwd,$db_name);
+	$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
 	mysqli_set_charset($conn, 'utf8');
 
 	$sql = "SELECT server_name, server_url, server_id FROM server_list";
@@ -119,7 +117,7 @@ function getServer($db_host, $db_user, $db_passwd, $db_name){
 </head>
 <body align = "center">
 <?php
-	$api = take_api($db_host,$db_user,$db_passwd,$db_name);
+	$api = take_api($db_server,$db_user,$db_password,$db_schema);
 	
 	$params = json_decode($api[3], true);
 	$reloads = array();
@@ -160,7 +158,7 @@ function getServer($db_host, $db_user, $db_passwd, $db_name){
 		<label for = "server">서버:</label>
 		<select name = "server">
 		<?php
-			$server_list = getServer($db_host, $db_user, $db_passwd, $db_name);
+			$server_list = getServer($db_server, $db_user, $db_password, $db_schema);
 			for ($i = 0; $i < count($server_list); $i++) {
 				echo '
 				<option value = ' . $server_list[$i][0] . ($_POST['server'] == $server_list[$i][0] ? ' selected="selected"' : '' ). ' >'.$server_list[$i][1].'</option>
@@ -201,13 +199,6 @@ function getServer($db_host, $db_user, $db_passwd, $db_name){
 		paramArr2.push([i, paramArr[i]]);
 	}
 	var hh = JSON.stringify(paramArr)
-
-	function makeForm() {
-	    var ffom = document.createElement("form");
-	    ffom.action = "";
-	    ffom.method = "post";
-	    return f;
-	}
 
 	function addData(namev,preval) {
 	    var elem = document.createElement("input");
@@ -270,7 +261,7 @@ function getServer($db_host, $db_user, $db_passwd, $db_name){
 		else{
 			array_push($insertArr,$_POST['period']);
 		}
-		insert($db_host,$db_user,$db_passwd,$db_name,$insertArr);
+		insert($db_server,$db_user,$db_password,$db_schema,$insertArr);
 	}
 ?>
 </body>
