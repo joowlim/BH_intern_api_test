@@ -95,28 +95,6 @@ function han ($s) { return reset(json_decode('{"s":"'.$s.'"} ')); }
 
 function to_han ($str) { return preg_replace('/(\\\u[a-f0-9]+)+/e','han("$0")',$str); }
 
-$period_list = array('1분마다', '2분마다', '3분마다', '4분마다', '5분마다', '6분마다', '10분마다', '12분마다',
-						'15분마다', '20분마다', '30분마다', '1시간마다', '2시간마다', '3시간마다', '4시간마다', '6시간마다', '8시간마다', '12시간마다', '하루마다');
-
-function getCrontabPeriod($period)
-{
-    if (strpos($period, '분마다') !== false)
-    {
-    	return "*/" . substr($period, 0, -9) . " * * * * ";
-    }
-    elseif (strpos($period, '시간마다') !== false)
-    {
-    	return "0 */" . substr($period, 0, -12) . " * * * ";
-    }
-    elseif (strpos($period, '하루마다') !== false) 
-    {
-    	return "0 0 * * * ";
-    }
-    else
-    {
-    	return "* * * * * ";
-    }
-}
 function getServer($db_host, $db_user, $db_passwd, $db_name){
 	$server_list = array();
 	$conn = mysqli_connect($db_host,$db_user,$db_passwd,$db_name);
