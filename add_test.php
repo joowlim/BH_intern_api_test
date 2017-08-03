@@ -258,17 +258,19 @@ function getServer($db_host, $db_user, $db_passwd, $db_name){
 		id.setAttribute("id", id);
 		return id;
 	}
-	var f = document.getElementById("forparams");
-
+  
+	var forparams = document.getElementById("forparams");
 	var count = "<?php echo($count); ?>";
 	for(i=0; i<count; i++){
-		var d = adddiv(paramArr2[i][0]);
-		var l = addlabel(paramArr2[i][0].concat(" 파라미터 값을 입력해주세요 : "));
-		var c = addData(paramArr2[i][0],reloads[paramArr2[i][0]]);
-	
-		d.appendChild(l);
-		d.appendChild(c);
-		f.insertBefore(d, f.childNodes[0]);
+    
+		// console.log("parameter checking");
+		var div = adddiv(paramArr2[i][0]);
+		var label = addlabel(paramArr2[i][0].concat(" 파라미터 값을 입력해주세요 : "));
+		var input = addData(paramArr2[i][0],reloads[paramArr2[i][0]]);
+		// console.log(paramArr2[i][0]);
+		div.appendChild(label);
+		div.appendChild(input);
+		forparams.appendChild(div);
 	}
 </script>
 <?php
