@@ -163,7 +163,7 @@ function getServer($db_host, $db_user, $db_passwd, $db_name){
 			$server_list = getServer($db_host, $db_user, $db_passwd, $db_name);
 			for ($i = 0; $i < count($server_list); $i++) {
 				echo '
-				<option value = '.$server_list[$i][0].' >'.$server_list[$i][1].'</option>
+				<option value = ' . $server_list[$i][0] . ($_POST['server'] == $server_list[$i][0] ? ' selected="selected"' : '' ). ' >'.$server_list[$i][1].'</option>
 				';
 			}         							 
 		?>
