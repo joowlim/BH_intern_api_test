@@ -278,7 +278,7 @@ function getCrontabPeriod($period)
 		id.setAttribute("id", id);
 		return id;
 	}
-	var f = document.getElementById("forparams");
+	var forparams = document.getElementById("forparams");
 	// f.textContent = "요기는 파라미터 입력하는 곳이얌 마음껏 입력해보시지\n";
 	var count = "<?php echo($count); ?>";
 	// console.log("count checking");
@@ -286,13 +286,13 @@ function getCrontabPeriod($period)
 	for(i=0; i<count; i++){
 		
 		// console.log("parameter checking");
-		var d = adddiv(paramArr2[i][0]);
-		var l = addlabel(paramArr2[i][0].concat(" 파라미터 값을 입력해주세요 : "));
-		var c = addData(paramArr2[i][0],reloads[paramArr2[i][0]]);
+		var div = adddiv(paramArr2[i][0]);
+		var label = addlabel(paramArr2[i][0].concat(" 파라미터 값을 입력해주세요 : "));
+		var input = addData(paramArr2[i][0],reloads[paramArr2[i][0]]);
 		// console.log(paramArr2[i][0]);
-		d.appendChild(l);
-		d.appendChild(c);
-		f.appendChild(d);
+		div.appendChild(label);
+		div.appendChild(input);
+		forparams.appendChild(div);
 	}
 </script>
 <?php
