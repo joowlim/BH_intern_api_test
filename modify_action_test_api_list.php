@@ -63,7 +63,7 @@
 	}
 	else{
 		$period = $_GET['period'];
-		$sql = "UPDATE test_api_list SET test_params='" . $params . "', immediately=" . $immediately . ", period='" . $period . "' WHERE test_api_id=" . $test_api_id;
+		$sql = "UPDATE test_api_list SET test_params='" . $params . "', immediately=" . $immediately . ", period=" . $period . " WHERE test_api_id=" . $test_api_id;
 		$result = mysqli_query($conn, $sql);
 
 		// crontab 

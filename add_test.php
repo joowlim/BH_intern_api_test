@@ -92,7 +92,7 @@ function insert($db_host,$db_user,$db_passwd,$db_name,$insertArr){
 	$intimm = (int)$insertArr[3];
 	$intper = $insertArr[4];
 	// echo "what is happening?";
-	$insert = mysqli_query($conn,"insert into test_api_list (server_id, api_id, test_params, immediately, period) Values('$insertArr[0]','$insertArr[1]','$insertArr[2]','$intimm', '$intper')");
+	$insert = mysqli_query($conn,"insert into test_api_list (server_id, api_id, test_params, immediately, period) Values('$insertArr[0]','$insertArr[1]','$insertArr[2]','$intimm', $intper)");
 	if(!$insert){
 		// printf("%s\n",mysqli_error($conn));
 		echo '<script>alert("Failed to insert")</script>';
@@ -212,15 +212,7 @@ function getCrontabPeriod($period)
 	</div>
 	<div>
 		<label for = "period">period :</label>
-		<select name = "period">
-				<?php
-					$i = 0;
-					for(;$i<count($period_list);$i++){
-						echo '
-			<option value="' . $period_list[$i] . '"' . ($_POST['period'] == $period_list[$i] ? 'selected="selected"' : '') . '>' . $period_list[$i] . '</option>';
-					}
-				?>
-		</select>
+		<input type = "text" name = "period" />
 	</div>
 	<h3>파라미터 입력하는 곳입니다.</h3>
 	<div style = "padding: 3%; font-style: italic; font-size: 1.0em; font-family: impact;" id = "forparams">
@@ -346,7 +338,7 @@ function getCrontabPeriod($period)
 			array_push($insertArr,NULL);
 		}
 		else{
-			array_push($insertArr,getCrontabPeriod($_POST['period']));
+			array_push($insertArr,$_POST['period']);
 		}
 		// array_push($insertArr,getCrontabPeriod($_POST['period']));
 		// echo $insertArr[3];
