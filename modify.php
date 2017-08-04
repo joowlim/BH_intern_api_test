@@ -25,9 +25,9 @@
 	$sql = "SELECT * FROM api_list WHERE api_id=". $api_id ;
 
 	$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
+    
 	mysqli_set_charset($conn, 'utf8');
-	
-	
+		
 	$result = mysqli_query($conn,$sql);
 	
 	$data = mysqli_fetch_array($result);
@@ -74,10 +74,7 @@
 
 <body style = "margin-top: 30px" >
 <font face = 'Times' >
-
 <h1 style = "text-align: center" ><img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()" />Test API Admin<img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()" /></h1><br />
-
-
 </font>
 <div class = "container-fluid" style = "width: 300px; height: 400px; margin: auto; vertical-align: middle;" >
 
@@ -200,8 +197,6 @@
 			}
 		});
 	}
-	
-
 </script>
 <head>
 	<script src = "//code.jquery.com/jquery.min.js" ></script>
