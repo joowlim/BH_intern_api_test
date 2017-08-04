@@ -19,6 +19,7 @@ function take_api($db_server,$db_user,$db_password,$db_schema){
 	$json = $set['params'];
 	$params = json_decode($json, true);
 	
+
 	mysqli_close($conn);
 	
 	$api = array($id,$uri,$method,$json,$params);
@@ -65,8 +66,12 @@ function insert($db_server,$db_user,$db_password,$db_schema,$insertArr){
 	else{
 	}
 	$intimm = (int)$insertArr[3];
-	$intper = $insertArr[4];
-  
+	$intper = (int)$insertArr[4];
+    echo '<script>
+           console.log("'.$intimm.'");
+           console.log("'.$intper.'");
+           
+           </script>';
 	$insert = mysqli_query($conn,"insert into test_api_list (server_id, api_id, test_params, immediately, period) Values('$insertArr[0]','$insertArr[1]','$insertArr[2]','$intimm', $intper)");
 
 	if(!$insert){
@@ -261,6 +266,7 @@ function getServer($db_server, $db_user, $db_password, $db_schema){
 		else{
 			array_push($insertArr,$_POST['period']);
 		}
+        
 		insert($db_server,$db_user,$db_password,$db_schema,$insertArr);
 	}
 ?>
