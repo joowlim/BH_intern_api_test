@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
 <?php
+	include("./db_account_info.php");
+
 	$mode = $_GET['mode'];
 
 	// Connect to the db
-	$link = mysqli_connect('localhost', 'root', 'root', 'API_TEST');
+	$link = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 	mysqli_set_charset($link, 'utf8');
 
 	// Define global variables
@@ -22,11 +24,8 @@
 	$api_id = $_GET['api_id'];
 	$sql = "SELECT * FROM api_list WHERE api_id=". $api_id ;
 
-	$db_host = "localhost";
-	$db_user = "root";
-	$db_passwd = "root";
-	$db_name = "API_TEST";
-	$conn = mysqli_connect($db_host,$db_user,$db_passwd,$db_name);
+	$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
+    
 	mysqli_set_charset($conn, 'utf8');
 		
 	$result = mysqli_query($conn,$sql);
@@ -116,11 +115,7 @@
 		$uri = $_GET['uri'];
 		$sql = "SELECT * FROM test_api_list WHERE test_api_id=". $test_api_id;
 
-		$db_host = "localhost";
-		$db_user = "root";
-		$db_passwd = "root";
-		$db_name = "API_TEST";
-		$conn = mysqli_connect($db_host,$db_user,$db_passwd,$db_name);
+		$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
 		mysqli_set_charset($conn, 'utf8');
 		
 		$result = mysqli_query($conn,$sql);

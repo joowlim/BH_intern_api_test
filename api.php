@@ -1,4 +1,7 @@
 <?php
+
+include("./db_account_info.php");
+
 // Get request number
 $request = trim($_SERVER['PATH_INFO']);
 $request = str_replace("/", "", $request);
@@ -7,7 +10,7 @@ $request = str_replace("/", "", $request);
 $method = $_SERVER['REQUEST_METHOD'];
 
 // Connect to the db
-$link = mysqli_connect('localhost', 'root', 'root', 'intern');
+$link = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 mysqli_set_charset($link, 'utf8');
 
 switch ($method)

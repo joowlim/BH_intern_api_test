@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <?php
+    include("./db_account_info.php");
 
 	$mode = ($_POST['mode']? $_POST['mode'] : $_GET['mode']);
        	
@@ -12,7 +13,7 @@
 	// Insert rows by insert button
          if($_POST['insert'] != null)
         {
-		$link = mysqli_connect('localhost', 'root', 'root', 'API_TEST');
+		$link = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
        		 mysqli_set_charset($link, 'utf8');
 		
 		if($mode == 0)
@@ -55,7 +56,7 @@
 		}
 		echo '
 		<script> 
-		location.replace(\'http://52.221.182.124/index.php?mode='. $mode . '\'); 
+		location.replace(\'./index.php?mode='. $mode . '\'); 
 		</script>'; 
 
         }

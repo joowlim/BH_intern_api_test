@@ -115,9 +115,10 @@
 
 	// Define global variables
 	include("./config.php");
+	include("./db_account_info.php");
 	
 	// Connect to the db
-	$link = mysqli_connect('localhost', 'root', 'root', 'API_TEST');
+	$link = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 	mysqli_set_charset($link, 'utf8');
 
 	$mode = 0;

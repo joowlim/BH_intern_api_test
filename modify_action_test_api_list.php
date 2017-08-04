@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <?php
+	include("./db_account_info.php");
+
 	$test_api_id = $_GET['id'];
 	$params = $_GET['params'];
 	$immediately = $_GET['immediately'];
 	
-	$db_host = "localhost";
-	$db_user = "root";
-	$db_passwd = "root";
-	$db_name = "API_TEST";
-	$conn = mysqli_connect($db_host, $db_user, $db_passwd, $db_name);
+	$conn = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 	mysqli_set_charset($conn, 'utf8');
 	
 	// crontab
@@ -30,4 +28,5 @@
 
 		echo $result;
 	}
+	mysqli_close($conn);
 ?>
