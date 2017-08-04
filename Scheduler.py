@@ -18,7 +18,7 @@ curs = conn.cursor()
 # Update mail table
 mail_sql = "SELECT * FROM test_api_list, server_list, api_list WHERE is_running = 1 AND test_api_list.server_id = server_list.server_id AND test_api_list.api_id = api_list.api_id"
 curs.execute(mail_sql)
-result = curs.fetchmany()
+result = curs.fetchall()
 
 for rst in result:
 	# Num index 기반이므로 table 구조가 변경되면 망한다
