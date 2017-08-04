@@ -2,18 +2,15 @@
 <html>
 
 <?php
-
+	include("./db_account_info.php");
 	$mode = $_GET['mode'];
 
 	// Connect to the db
-	$link = mysqli_connect('localhost', 'root', 'root', 'API_TEST');
+	$link = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 	mysqli_set_charset($link, 'utf8');
 
 	// Define global variables
 	include("./config.php");
-	// Define crontab functions
-	include("./crontab.php");
-
 	if($mode == 0){
 		
 ?>
@@ -28,13 +25,7 @@
 
 	$api_id = $_GET['api_id'];
 	$sql = "SELECT * FROM api_list WHERE api_id=". $api_id ;
-
-	
-	$db_host = "localhost";
-	$db_user = "root";
-	$db_passwd = "root";
-	$db_name = "API_TEST";
-	$conn = mysqli_connect($db_host,$db_user,$db_passwd,$db_name);
+	$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
 	mysqli_set_charset($conn, 'utf8');
 	
 	
@@ -82,12 +73,7 @@
 			}
 		});
 	}
-
-
-	</script>
-	
-	
-	
+	</script>	
 </head>
 
 <body style = "margin-top: 30px" >
@@ -103,7 +89,7 @@
 <input type="hidden" name = "api_id" value = "<?php echo $api_id; ?>">
 <input type="hidden" name = "uri" value = '<?php echo $data['uri']; ?>'>
 <p>id : <?php echo $api_id ?></p>
-<p>uri : <input class = "form-control" id = "uri" value = <?php echo "\"".$data['uri']."\""?>></input></p>
+<p>uri : <input class = "form-control" id = "uri" value = <?php echo "\"".$data['uri']."\""?>/></p>
 <p>method : 
 	<select class = "form-control" id = "method_list" name = "method_list">
 	<?php
@@ -155,13 +141,7 @@
 		$test_api_id = $_GET['api_id'];
 		$uri = $_GET['uri'];
 		$sql = "SELECT * FROM test_api_list WHERE test_api_id=". $test_api_id;
-
-
-		$db_host = "localhost";
-		$db_user = "root";
-		$db_passwd = "root";
-		$db_name = "API_TEST";
-		$conn = mysqli_connect($db_host,$db_user,$db_passwd,$db_name);
+		$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
 		mysqli_set_charset($conn, 'utf8');
 		
 		$result = mysqli_query($conn,$sql);
@@ -195,7 +175,7 @@
 <script>
 
 	function selectListener() {
-		if($('#immediately').val()=="1"){
+		if($('#immediately').val() == "1"){
 			$('#period_p_tag').hide();
 		}
 		else{
@@ -267,8 +247,8 @@
 
 <form class="form-inline">
 	<p>test api id : <?php echo $api_id;?></p>
-	<p>server URL : <?php echo $server_url ?>
-	<p>API URI : <?php echo $uri ?>
+	<p>server URL : <?php echo $server_url ?></p>
+	<p>API URI : <?php echo $uri ?></p>
 	<p>params : <input class = "form-control" id = "params" value = '<?php echo $test_params ?>'> </p>
 	<p>테스팅 타이밍 : 
 		<select class = "form-control" onchange = "selectListener()" id = "immediately" name = "immediately">
@@ -291,13 +271,7 @@
 	</p>
 	<?php
 		echo 
-	'<p id = "period_p_tag" >period :<select id = "period" name = "period" >';
-			for($i = 0;$i<count($period_list);$i++){
-				echo 
-		'<option value = "' . $period_star_list[$i] . '" '. ($period_star_list[$i] == $period ? 'selected = "selected"' : "") .'>' . 
-		$period_list[$i] . '</option>';
-				
-			}
+	'<p id = "period_p_tag" >period :<input id = "period" name = "period" value ="'.$period.'">';
 		echo 
 	'</select> </p>';
 
