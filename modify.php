@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <?php
 	include("./db_account_info.php");
-
 	$mode = $_GET['mode'];
 
 	// Connect to the db
@@ -11,8 +11,8 @@
 
 	// Define global variables
 	include("./config.php");
-
 	if($mode == 0){
+		
 ?>
 
 <head>
@@ -23,11 +23,10 @@
 <?php
 	$api_id = $_GET['api_id'];
 	$sql = "SELECT * FROM api_list WHERE api_id=". $api_id ;
-
 	$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
-    
 	mysqli_set_charset($conn, 'utf8');
-		
+	
+	
 	$result = mysqli_query($conn,$sql);
 	
 	$data = mysqli_fetch_array($result);
@@ -38,9 +37,9 @@
 	else{
 		$isFind = true;
 	}
-
 ?>
 	<script>
+	
 	function sendModifyRequest(id, uri, method, params){
 
 		if(uri ===""){
@@ -69,12 +68,15 @@
 			}
 		});
 	}
-	</script>
+	</script>	
 </head>
 
 <body style = "margin-top: 30px" >
 <font face = 'Times' >
+
 <h1 style = "text-align: center" ><img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()" />Test API Admin<img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()" /></h1><br />
+
+
 </font>
 <div class = "container-fluid" style = "width: 300px; height: 400px; margin: auto; vertical-align: middle;" >
 
@@ -82,7 +84,7 @@
 <input type="hidden" name = "api_id" value = "<?php echo $api_id; ?>">
 <input type="hidden" name = "uri" value = '<?php echo $data['uri']; ?>'>
 <p>id : <?php echo $api_id ?></p>
-<p>uri : <input class = "form-control" id = "uri" value = <?php echo "\"".$data['uri']."\""?> /></p>
+<p>uri : <input class = "form-control" id = "uri" value = <?php echo "\"".$data['uri']."\""?>/></p>
 <p>method : 
 	<select class = "form-control" id = "method_list" name = "method_list">
 	<?php
@@ -100,7 +102,6 @@
 	?>
 	</select>
 </p>
-
 <!--<p>params : <input class = "form-control" id = "params" value = '<?php echo ''.$data['params'].''?>' /></p>-->
 <p>parameter modify :
 	<?php
@@ -123,12 +124,9 @@
 <?php 
 	}
 	else{
-		// mode = 1
-		
 		$test_api_id = $_GET['api_id'];
 		$uri = $_GET['uri'];
 		$sql = "SELECT * FROM test_api_list WHERE test_api_id=". $test_api_id;
-
 		$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
 		mysqli_set_charset($conn, 'utf8');
 		
@@ -142,6 +140,7 @@
 		$immediately = $data['immediately'];
 		$period = $data['period'];
 
+		
 		$sql = "SELECT * FROM api_list WHERE api_id=".$api_id;
 		
 		$result = mysqli_query($conn,$sql);
@@ -170,7 +169,7 @@
 		}
 	}
 	function sendModifyRequest(id, params, immediately, period, uri, jar_path, old_period, old_method) {
-		
+
 		var data;
 		if(immediately == 1){
 			data = {
@@ -200,7 +199,7 @@
 			type:"GET",
 			data : data,
 			success:function(err){
-				console.log(err);
+				//console.log(err);
 				if(err == 0){
 					alert("실패");
 				}
@@ -211,6 +210,7 @@
 			}
 		});
 	}
+
 </script>
 <head>
 	<script src = "//code.jquery.com/jquery.min.js" ></script>
@@ -218,11 +218,17 @@
 	<link rel = "stylesheet" href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css" >
 	<script src = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js" ></script>
 <body style = "margin-top:30px" >
+
 <font face = 'Times'>
+
 <h1 style = "text-align: center"><img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()" /><b>Test API Admin</b><img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()" /></h1>
 <br/>
+
 </font>
+
 <div class = "container-fluid" style = "width: 300px; height: 400px; margin: auto;" >
+
+
 <form class="form-inline">
 	<p>test api id : <?php echo $api_id;?></p>
 	<p>server URL : <?php echo $server_url ?></p>
