@@ -7,6 +7,7 @@
 
 	while(!feof($user_config)) {
 		$each_line = fgets($user_config);
+        if($each_line[0] == '#') continue;
 		if(strpos($each_line, 'server') !== false && strpos($each_line, 'server') < strpos($each_line, "=")) {
 			$db_server = trim(substr($each_line,strpos($each_line,'=')+1));
 		}
