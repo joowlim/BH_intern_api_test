@@ -78,7 +78,7 @@
 </font>
 <div class = "container-fluid" style = "width: 300px; height: 400px; margin: auto; vertical-align: middle;" >
 
-<form class = "form-inline" action = "modify_action_api_list.php", method = "get">
+<form class = "form-inline" action = "modify_action_api_list.php" method = "get">
 <input type="hidden" name = "api_id" value = "<?php echo $api_id; ?>">
 <input type="hidden" name = "uri" value = '<?php echo $data['uri']; ?>'>
 <p>id : <?php echo $api_id ?></p>
