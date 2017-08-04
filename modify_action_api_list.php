@@ -2,12 +2,10 @@
 	<h1 style = "text-align: center"><img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()"/>Test API Admin<img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()"/></h1>
 <body>
 <p id = "error_msg"></p>
-  <script>
+<?php
 	function han ($s) { return reset(json_decode('{"s":"'.$s.'"} ')); }
 	function to_han ($str) { return preg_replace('/(\\\u[a-f0-9]+)+/e','han("$0")',$str); }
-  </script>
-  
-<?php
+	
 	$id = $_GET['api_id'];
 	$uri = $_GET['uri'];
 	$method = $_GET['method_list'];
@@ -21,7 +19,7 @@
 	$params_hangeul = str_replace('","', '", "', to_han($params));
   
 	include("./db_account_info.php");
-	$conn = mysqli_connect($db_server, $db_user, $db_password, $db_schema)
+	$conn = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 	if(!$conn){
 		// printf("%s\n",mysqli_error($conn));
 		echo '<script>
