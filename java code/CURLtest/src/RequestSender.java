@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 
 public class RequestSender {
 
-	private static String DATE_FORMAT = "dd/MM/yyyy hh:mm:ss.SSS";
+	private static String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss.SSS";
 	
 	private URL requestURL;
 	private String method;
