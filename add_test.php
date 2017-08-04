@@ -67,11 +67,7 @@ function insert($db_server,$db_user,$db_password,$db_schema,$insertArr){
 	}
 	$intimm = (int)$insertArr[3];
 	$intper = (int)$insertArr[4];
-    echo '<script>
-           console.log("'.$intimm.'");
-           console.log("'.$intper.'");
-           
-           </script>';
+
 	$insert = mysqli_query($conn,"insert into test_api_list (server_id, api_id, test_params, immediately, period) Values('$insertArr[0]','$insertArr[1]','$insertArr[2]','$intimm', $intper)");
 
 	if(!$insert){
