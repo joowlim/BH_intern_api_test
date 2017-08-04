@@ -54,7 +54,7 @@
 				id: id,
 				uri: uri,
 				method: method,
-				params:p arams
+				params:  params
 			},
 			success:function(err){
 				console.log(err);
@@ -78,7 +78,9 @@
 </font>
 <div class = "container-fluid" style = "width: 300px; height: 400px; margin: auto; vertical-align: middle;" >
 
-<form class = "form-inline">
+<form class = "form-inline" action = "modify_action_api_list.php", method = "get">
+<input type="hidden" name = "api_id" value = "<?php echo $api_id; ?>">
+<input type="hidden" name = "uri" value = '<?php echo $data['uri']; ?>'>
 <p>id : <?php echo $api_id ?></p>
 <p>uri : <input class = "form-control" id = "uri" value = <?php echo "\"".$data['uri']."\""?> /></p>
 <p>method : 
@@ -99,9 +101,21 @@
 	</select>
 </p>
 
-<p>params : <input class = "form-control" id = "params" value = '<?php echo ''.$data['params'].''?>' /></p>
+<!--<p>params : <input class = "form-control" id = "params" value = '<?php echo ''.$data['params'].''?>' /></p>-->
+<p>parameter modify :
+	<?php
+		$params_array = json_decode($data['params'],true);
+		foreach($params_array as $key => $value){
+			echo '
+				<p>'.$key.' : <input class = "form-control" id = '.$key.' name = key_'.$key.' /></p>
+			';
+		}
+	?>
+</p>
+<input type="hidden" name = "params" value = '<?php echo ''.$data['params'].''; ?>'>
+<input type = "submit" value = "확인" style ="width:20%; height:40px;">
 </form>
-<button class = "btn btn-primary btn-lg" onClick = "sendModifyRequest(<?php echo $api_id;?>,$('#uri').val(),$('#method_list').val(),$('#params').val())" >확인 </button>
+<!--<button class = "btn btn-primary btn-lg" onClick = "sendModifyRequest(<?php echo $api_id;?>,$('#uri').val(),$('#method_list').val(),$('#params').val())" >확인 </button>-->
 <a href = "."><button class = "btn btn-default btn-lg" >취소</button></a>
 </div>
 </body>
