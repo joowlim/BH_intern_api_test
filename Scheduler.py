@@ -27,7 +27,7 @@ for rst in result:
 	last_time = rst[7]
 	now = datetime.datetime.now()
 	if last_time == None:
-		last_time = now
+		last_time = datetime.datetime.strptime("1000-01-01 00:00:00", "%Y-%m-%d %H:%M:%S")
 	
 	test_time = last_time + datetime.timedelta(minutes = rst[5])
 
