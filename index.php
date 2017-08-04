@@ -81,7 +81,7 @@
 	function change_search_field(sel)
 	{
 		if(sel.value == "date")
-			document.getElementById('search_field').innerHTML = '<input style = "width: 30%" type = "datetime-local" name = "date-start" />~<input style = "width: 30%" type = "datetime-local" name = "date-end" />';
+			document.getElementById('search_field').innerHTML = '<input style = "width: 30%" type = "datetime-local" name = "date-start" value = "<?php echo $_GET['date-start']; ?>" />~<input style = "width: 30%" type = "datetime-local" name = "date-end" value = "<?php echo $_GET['date-end']; ?>" />';
 		else
 			document.getElementById('search_field').innerHTML = '<input style = "width: 60%" type = "text" name = "search_key" />';
 	}
@@ -388,8 +388,8 @@
 						if($_GET['column'] == "date")
 						{
 					?>
-					<input style = "width: 30%" type = "datetime-local" name = "date-start" />~
-					<input style = "width: 30%" type = "datetime-local" name = "date-end" />
+					<input style = "width: 30%" type = "datetime-local" name = "date-start" value = "<?php echo $_GET['date-start']; ?>"/>~
+					<input style = "width: 30%" type = "datetime-local" name = "date-end" value = "<?php echo $_GET['date-end']; ?>"/>
 					<?php
 						}
 						else
