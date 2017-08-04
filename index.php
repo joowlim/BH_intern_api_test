@@ -70,8 +70,13 @@
 	li a.active:hover {
 		background-color: #6DD071;
 		color: white;
+		
+	}
+	a:hover{
+		cursor: pointer;
 	}
 	</style>
+	<script src="//code.jquery.com/jquery.min.js"></script>
 	<script>
 	function change_search_field(sel)
 	{
@@ -80,20 +85,45 @@
 		else
 			document.getElementById('search_field').innerHTML = '<input style = "width: 60%" type = "text" name = "search_key" />';
 	}
+	function delete_row(mode,id)
+	{
+		if(confirm("삭제하시겠습니까?"))
+		{
+			console.log(mode);
+			console.log(id);
+			$.ajax({
+				url : "./delete.php",
+				data : {
+					mode : mode,
+					id : id
+				},
+				success : function(result){
+					if(result == 0)
+						alert("삭제를 실패했습니다");
+					else
+						alert("삭제를 성공했습니다!");
+					location.reload();
+				},
+				error : function(e){
+					alert("삭제를 실패했습니다");
+				}
+			});
+		}
+	}
 	</script>
 	<?php
 
 	// Define global variables
 	include("./config.php");
-	// Define crontab functions
-	include("./crontab.php");
+	include("./db_account_info.php");
 	
 	// Connect to the db
-	$link = mysqli_connect('localhost', 'root', 'root', 'API_TEST');
+	$link = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 	mysqli_set_charset($link, 'utf8');
 
 	$mode = 0;
 
+	/*
 	function crontab_del_ins_mod_test_api($test_api_id, $op, $uri, $link, $jar_path)
 	{
 		$t_sql = "SELECT * FROM test_api_list, api_list WHERE test_api_id = " . $test_api_id . " AND test_api_list.api_id = api_list.api_id";
@@ -108,28 +138,31 @@
 		if ($op == 1)
 		{
 			insertCommand($new_command);	
-			echo '<script>alert("api insert successed")</script>';
+			echo '<script>alert("api insert into scheduler successed")</script>';
 		}
 	 	elseif ($op == 0)
 	 	{
 			deleteCommand($new_command);
-			echo '<script>alert("api delete successed")</script>';
+			echo '<script>alert("api delete from scheduler successed")</script>';
 	 	}
 	 	elseif ($op == 2) 
 	 	{
 	 		modifyCommand($crontab_list, $new_command);
-	 		echo '<script>alert("api modify successed")</script>';
+	 		echo '<script>alert("api modify from scheduler successed")</script>';
 	 	}
 	}
+	*/
+	
+	function prettyPeriod($period) {
+		$min = $period % 60;
+		$hour = ($period / 60) % 24;
+		$day = intval(($period / 60) / 24);
 
+		return ($day != null ? $day . "일 " : "") . ($hour != null ? $hour . "시간 " : "") . $min . "분";
+	}
 	// Delete rows by delete button
 	if($_GET['delete'] != null)
 	{
-		// Remove data from crontab
-		if($_GET['mode'] == 1)
-		{
-			crontab_del_ins_mod_test_api($_GET['delete'], 0, $_GET['uri'], $link, $jar_path);
-		}
 		// Remove data from db
 		if($_GET['mode'] == 0)
 		{
@@ -176,16 +209,6 @@
 			$crontab_list = exec("crontab -l");
 
 			$new_command = $t_row['period'] . $java_path . " -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'];
-			
-			if($_GET['toggle'] == 0)
-			{
-				deleteCommand($new_command);
-			}
-			else
-			{
-				insertCommand($new_command);
-			}
-			
 			mysqli_query($link, $sql);
 			
 			if(mysqli_affected_rows($link) == 1)
@@ -279,16 +302,16 @@
 		{
 			$search_where_clause = "WHERE " . $_GET['column'] . " LIKE '%" . $_GET['search_key'] . "%'";
 			
-			$sql = "SELECT * FROM test_log, api_list, server_list " . $search_where_clause . " AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
-			$num_sql = "SELECT COUNT(*) FROM test_log, api_list, server_list " . $search_where_clause . " AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id";
+			$sql = "SELECT * FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON test_log.server_id = server_list.server_id " . $search_where_clause . " ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
+			$num_sql = "SELECT COUNT(*) FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON test_log.server_id = server_list.server_id " . $search_where_clause;
 		}
 		elseif($_GET['column'] == "date")
 		{
-			$date_start = date('d/m/Y H:i:00', strtotime($_GET['date-start']));
-			$date_end = date('d/m/Y H:i:00', strtotime($_GET['date-end']));
+			$date_start = $_GET['date-start'];
+			$date_end = $_GET['date-end'];
 			
-			$sql = "SELECT * FROM test_log, api_list, server_list WHERE (STR_TO_DATE(request_time, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE('" . $date_start . "', '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE('" . $date_end . "', '%d/%m/%Y %H:%i:%s')) AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
-			$num_sql = "SELECT COUNT(*) FROM test_log, api_list, server_list WHERE (STR_TO_DATE(request_time, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE('" . $date_start . "', '%d/%m/%Y %H:%i:%s') AND STR_TO_DATE('" . $date_end . "', '%d/%m/%Y %H:%i:%s')) AND test_log.api_id = api_list.api_id AND test_log.server_id = server_list.server_id";
+			$sql = "SELECT * FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON test_log.server_id = server_list.server_id WHERE (STR_TO_DATE(request_time, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE('" . $date_start . "', '%Y-%m-%dT%H:%i') AND STR_TO_DATE('" . $date_end . "', '%Y-%m-%dT%H:%i')) ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
+			$num_sql = "SELECT COUNT(*) FROM test_log WHERE (STR_TO_DATE(request_time, '%d/%m/%Y %H:%i:%s') BETWEEN STR_TO_DATE('" . $date_start . "', '%Y-%m-%dT%H:%i') AND STR_TO_DATE('" . $date_end . "', '%Y-%m-%dT%H:%i'))";
 		}
 		else
 		{
@@ -416,7 +439,7 @@
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['uri'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['method'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['params'] . '</td>
-		<td style = "background-color: ' . $color . ';"><a href = "./index.php?mode=0&delete=' . $row['api_id'] . '&page=' . $page . '"><img src = "' . $x_button_url . '" /></a></td>
+		<td style = "background-color: ' . $color . ';"><a onclick="delete_row(' . $mode . ', ' . $row['api_id'] .')"><img src = "' . $x_button_url . '" /></a></td>
 		<td align = "center" style = "background-color: ' . $color . ';"><a href = "./modify.php?mode=0&api_id=' . $row['api_id'] . '"><img src = "' . $modify_button_url . '" /></a></td>
 		<td align = "center" style = "background-color: ' . $color . ';"><a href = "./add_test.php?api_id=' . $row['api_id'] . '"><img src="' . $check_button_url . '" /></a></td>
 	</tr>';
@@ -448,9 +471,9 @@
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['method'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['test_params'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . ($row['immediately'] == 1 ? "O" : "X") . '</td>
-		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['period'] . '</td>
+		<td style = "background-color: ' . $color . ';">&nbsp;' . prettyPeriod($row['period']) . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . ($row['is_running'] == 1 ? '<a href="./index.php?mode=1&page=' . $page . '&column=' . $_GET['column'] . '&search_key=' . $_GET['search_key'] . '&toggle=0&api_id=' . $row['test_api_id'] . '&uri=' . $row['server_url'] . $row['uri'] . '" ><img src = "' . $on_button_url . '" width = 28/></a>' : '<a href = "./index.php?mode=1&page=' . $page . '&column=' . $_GET['column'] . '&search_key=' . $_GET['search_key'] . '&toggle=1&api_id=' . $row['test_api_id'] . '&uri=' . $row['server_url'] . $row['uri'] . '"><img src = "'. $off_button_url .'" width = 28/></a>') . '</td>
-		<td style = "background-color: ' . $color . ';"><a href = "./index.php?mode=1&delete=' . $row['test_api_id'] . '&page=' . $page . '&uri=' . $row['server_url'] . $row['uri'] . '"><img src = "' . $x_button_url . '" width = 28/></a></td>
+		<td style = "background-color: ' . $color . ';"><a onclick="delete_row(' . $mode . ', ' . $row['test_api_id'] .')"><img src = "' . $x_button_url . '" width = 28/></a></td>
 		<td align = "center" style = "background-color: ' . $color . ';"><a href = "./modify.php?mode=1&api_id=' . $row['test_api_id'] . '&uri=' . $row['server_url'] . $row['uri'] . '"><img src = "' . $modify_button_url . '" width = 28/></a></td>
 	</tr>';
 		}
@@ -476,7 +499,7 @@
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['server_name'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['server_url'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['server_ip'] . '</td>
-		<td style = "background-color: ' . $color . ';"><a href = "./index.php?mode=2&delete=' . $row['server_id'] . '&page=' . $page . '"><img src = "' . $x_button_url . '" /></a></td>
+		<td style = "background-color: ' . $color . ';"><a onclick="delete_row(' . $mode . ', ' . $row['server_id'] .')"><img src = "' . $x_button_url . '" /></a></td>
 	</tr>';
 		}
 	}
@@ -509,7 +532,7 @@
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['response_time'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['elapsed_time_nano'] / 1000000 . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['response_code'] . '</td>
-		<td style = "background-color: ' . $color . ';"><a href = "./index.php?mode=3&delete=' . $row['log_id'] . '&page=' . $page . '"><img src="' . $x_button_url . '" /></a></td>
+		<td style = "background-color: ' . $color . ';"><a onclick="delete_row(' . $mode . ', ' . $row['log_id'] .')"><img src="' . $x_button_url . '" /></a></td>
 	</tr>';
 		}
 	}
@@ -528,9 +551,16 @@
 	$search_get_data = ($_GET['search_key'] != null ? '&column=' . $_GET['column'] . '&search_key=' . $_GET['search_key'] : '');
 	
 	// add Prev button
+	if($_GET['column'] != "date")
+	{
 	$page_string = '
 		<a href = "./index.php?mode=' . $mode . '&page=' . ($page - 1 >= 0 ? $page - 1 : 0) . $search_get_data .'" style = "text-decoration:none"><img src="' . $left_button_url . '" /></a> ';
-
+	}
+	else
+	{
+	$page_string = '
+		<a href = "./index.php?mode=' . $mode . '&page=' . ($page - 1 >= 0 ? $page - 1 : 0) . '&column=date&date-start=' . $_GET['date-start'] . '&date-end=' . $_GET['date-end'] . '" style = "text-decoration:none"><img src="' . $left_button_url . '" /></a> ';
+	}
 	// add page number
 	for($i = floor($page / $page_list_num) * $page_list_num; $i < min($num_pages + 1, floor($page / $page_list_num) * $page_list_num + $page_list_num); $i++)
 	{
@@ -544,7 +574,7 @@
 			else
 			{
 				$page_string = $page_string . '
-		<a href = "./index.php?mode=' . $mode . '&page=' . $i . $search_get_data . '&column=date&date-start=' . $_GET['date-start'] . '&date-end=' . $_GET['date-end'] . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';			
+		<a href = "./index.php?mode=' . $mode . '&page=' . $i . '&column=date&date-start=' . $_GET['date-start'] . '&date-end=' . $_GET['date-end'] . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';			
 			}
 		}
 		else
@@ -554,9 +584,16 @@
 		}
 	}
 	// add Next button
+	if($_GET['column'] != "date")
+	{
 	$page_string = $page_string . '
 		<a href = "./index.php?mode=' . $mode . '&page=' . ($page + 1 <= $num_pages ? $page + 1 : $num_pages) . $search_get_data . '" style = "text-decoration: none"><img src = "' . $right_button_url . '"/></a>';
-	
+	}
+	else
+	{
+	$page_string = $page_string . '
+		<a href = "./index.php?mode=' . $mode . '&page=' . ($page + 1 <= $num_pages ? $page + 1 : $num_pages) . '&column=date&date-start=' . $_GET['date-start'] . '&date-end=' . $_GET['date-end'] . '" style = "text-decoration: none"><img src = "' . $right_button_url . '"/></a>';	
+	}
 	// echo actual page string
 	echo $page_string;
 	?>

@@ -29,6 +29,7 @@ public class RequestSender {
 		if(params.equals("")){
 			try{
 				requestURL = new URL(url);
+				
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -102,6 +103,8 @@ public class RequestSender {
 			requestTimeMillis = System.currentTimeMillis();
 			requestTime = System.nanoTime();
 			connection = (HttpURLConnection) requestURL.openConnection();
+			connection.setConnectTimeout(5000);
+			connection.setReadTimeout(5000);
 			
 		}catch(Exception e){
 			e.printStackTrace();
