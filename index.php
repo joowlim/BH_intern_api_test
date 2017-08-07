@@ -7,7 +7,7 @@
 	$test_link = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 	if(!$test_link)
 	{
-		header("Location: " . (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" . "install.php");
+		header("Location: " . (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . str_replace("index.php","",$_SERVER['REQUEST_URI']) . "install.php");
 		exit();
 	}
 	mysqli_close($test_link);
@@ -214,10 +214,6 @@
 		if($t_row['immediately'] == 0)
 		{
 			$sql = "UPDATE test_api_list SET is_running = ". $_GET['toggle'] ." WHERE test_api_id = " . $_GET['api_id'];
-			
-			$crontab_list = exec("crontab -l");
-
-			$new_command = $t_row['period'] . $java_path . " -jar " . $jar_path . " " . $_GET['uri'] . " " . $t_row['method'] . " " . $_GET['api_id'];
 			mysqli_query($link, $sql);
 			
 			if(mysqli_affected_rows($link) == 1)
