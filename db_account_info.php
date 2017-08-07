@@ -20,6 +20,12 @@
 		else if(strpos($each_line, 'schema') !== false && strpos($each_line, 'schema') < strpos($each_line, "=")) {
 			$db_schema = trim(substr($each_line,strpos($each_line,'=')+1));
 		}
+		else if(strpos($each_line, 'jar_path') !== false && strpos($each_line, 'jar_path') < strpos($each_line, "=")) {
+			$jar_path = trim(substr($each_line,strpos($each_line,'=')+1));
+		}
+		else if(strpos($each_line, 'java_path') !== false && strpos($each_line, 'java_path') < strpos($each_line, "=")) {
+			$java_path= trim(substr($each_line,strpos($each_line,'=')+1));
+		}
 	}
 	fclose($user_config);
 ?>

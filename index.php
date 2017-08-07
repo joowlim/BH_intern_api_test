@@ -1,3 +1,17 @@
+<?php
+	// Define global variables
+	include("./config.php");
+	include("./db_account_info.php");
+	
+	// Test connection
+	$test_link = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
+	if(!$test_link)
+	{
+		header("Location: " . (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" . "install.php");
+		exit();
+	}
+	mysqli_close($test_link);
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -112,11 +126,6 @@
 	}
 	</script>
 	<?php
-
-	// Define global variables
-	include("./config.php");
-	include("./db_account_info.php");
-	
 	// Connect to the db
 	$link = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 	mysqli_set_charset($link, 'utf8');
