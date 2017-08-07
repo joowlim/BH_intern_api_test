@@ -7,7 +7,8 @@
 	$test_link = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 	if(!$test_link)
 	{
-		header("Location: " . (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . str_replace("index.php","",$_SERVER['REQUEST_URI']) . "install.php");
+		$exp_uri = explode('?', $_SERVER['REQUEST_URI']);
+		header("Location: " . (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . str_replace("index.php","",$exp_uri[0]) . "install.php");
 		exit();
 	}
 	mysqli_close($test_link);
