@@ -113,11 +113,12 @@
 		}
 	?>
 </p>
-<input type="hidden" name = "params" value = '<?php echo ''.$data['params'].''; ?>'>
-<input type = "submit" value = "확인" style ="width:20%; height:40px;">
+<input type = "hidden" name = "params" value = '<?php echo ''.$data['params'].''; ?>'>
+<input type = "submit" value = "확인" style = "width:20%; height:30px;">
+<input type = "button" value = "취소" onclick = "history.back()">
 </form>
+<!---<a href = "."><button class = "btn btn-default btn-lg" >취소</button></a>-->
 <!--<button class = "btn btn-primary btn-lg" onClick = "sendModifyRequest(<?php echo $api_id;?>,$('#uri').val(),$('#method_list').val(),$('#params').val())" >확인 </button>-->
-<a href = "."><button class = "btn btn-default btn-lg" >취소</button></a>
 </div>
 </body>
 
@@ -229,11 +230,24 @@
 <div class = "container-fluid" style = "width: 300px; height: 400px; margin: auto;" >
 
 
-<form class="form-inline">
-	<p>test api id : <?php echo $api_id;?></p>
+<form class="form-inline" action = "modify_action_test_api_list.php" method = "get">
+	<p>test api id : <?php echo $test_api_id;?></p>
+	<input type="hidden" name = "api_id" value = "<?php echo $test_api_id; ?>">
 	<p>server URL : <?php echo $server_url ?></p>
+	<input type="hidden" name = "server_url" value = '<?php echo $server_url; ?>'>
 	<p>API URI : <?php echo $uri ?></p>
-	<p>params : <input class = "form-control" id = "params" value = '<?php echo $test_params ?>'> </p>
+	<input type="hidden" name = "uri" value = '<?php echo $uri; ?>'>
+	<p>parameter modify :
+		<?php
+			$params_array = json_decode($test_params,true);
+			foreach($params_array as $key => $value){
+				echo '
+					<p>'.$key.' : <input class = "form-control" id = '.$key.' name = key_'.$key.' /></p>
+				';
+			}
+		?>
+	</p>
+	<input type="hidden" name = "params" value = '<?php echo ''.$test_params.''; ?>'>
 	<p>테스팅 타이밍 : 
 		<select class = "form-control" onchange = "selectListener()" id = "immediately" name = "immediately">
 		<?php
@@ -260,19 +274,10 @@
 	'</select> </p>';
 
 	?>
+	<input type = "submit" value = "확인" style = "width:15%; height:24px;">
+	<input type = "button" value = "취소" onclick = "history.back()">
+	<!--<a href = "."><button class = "btn btn-default btn-lg" >취소</button></a>-->
 </form>
-	<script>
-		selectListener();
-	</script>
-	<?php
-		$uri_q = "'" . $server_url . $uri . "'";
-		$jar_path_q = "'" . $jar_path . "'";
-		$period_q = "'" . $period . "'";
-		$method_q = "'" . $method . "'";
-
-	?>
-	<button class = "btn btn-primary btn-lg" onClick = "sendModifyRequest(<?php echo $test_api_id;?>,$('#params').val(),$('#immediately').val(),$('#period').val(),<?php echo $uri_q;?>,<?php echo $jar_path_q;?>,<?php echo $period_q;?>,<?php echo $method_q;?>)">확인</button>
-	<a href = "."><button class = "btn btn-default btn-lg" >취소</button></a>
 </div>
 </body>
 
