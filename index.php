@@ -131,36 +131,6 @@
 	mysqli_set_charset($link, 'utf8');
 
 	$mode = 0;
-
-	/*
-	function crontab_del_ins_mod_test_api($test_api_id, $op, $uri, $link, $jar_path)
-	{
-		$t_sql = "SELECT * FROM test_api_list, api_list WHERE test_api_id = " . $test_api_id . " AND test_api_list.api_id = api_list.api_id";
-		$t_result = mysqli_query($link, $t_sql);
-		$t_row = mysqli_fetch_array($t_result, MYSQL_ASSOC);
-		
-		$crontab_list = exec("crontab -l");
-
-		$new_command = $t_row['period'] . $java_path . " -jar " . $jar_path . " " . $uri . " " . $t_row['method'] . " " . $test_api_id;
-
-		// op 1 : insert , op 0 : delete , op 2 : modify
-		if ($op == 1)
-		{
-			insertCommand($new_command);	
-			echo '<script>alert("api insert into scheduler successed")</script>';
-		}
-	 	elseif ($op == 0)
-	 	{
-			deleteCommand($new_command);
-			echo '<script>alert("api delete from scheduler successed")</script>';
-	 	}
-	 	elseif ($op == 2) 
-	 	{
-	 		modifyCommand($crontab_list, $new_command);
-	 		echo '<script>alert("api modify from scheduler successed")</script>';
-	 	}
-	}
-	*/
 	
 	function prettyPeriod($period) {
 		$min = $period % 60;
@@ -187,12 +157,17 @@
 		}
 		elseif($_GET['mode'] == 3)
 		{
-			$sql = "DELETE FROM test_log WHERE log_id = " . $_GET['delete'];
+			$ind = 0;
+			$sql = "DELETE FROM test_log WHERE";
+			foreach($_GET['delete_list'] as $one_log) {
+           	 	$sql = $sql . ($ind == 0? " log_id = " : " OR log_id = "). $one_log  ;
+           	 	$ind = $ind + 1;
+   			}
 		}
 	
 		mysqli_query($link, $sql);
 		
-		if(mysqli_affected_rows($link) == 1)
+		if(mysqli_affected_rows($link) >= 1)
 		{
 			echo '<script>alert("Deleted")</script>';
 		}
@@ -511,6 +486,15 @@
 	{	
 		// add table header
 		$table_string = '
+	<form action = "./index.php" method="GET">
+	<input type = "hidden" name = "mode" value = "' . $mode . '" />
+	<input type = "hidden" name = "page" value = "' . ($page - 1 >= 0 ? $page - 1 : 0) . '" />
+	<input type = "hidden" name = "delete" value = "1" />
+	<input type = "hidden" name = "search_key" value = "' . $_GET["search_key"] . '" />
+	<input type = "hidden" name = "date-start" value = "' . $_GET["date-start"] . '" />
+	<input type = "hidden" name = "date-end" value = "' . $_GET["date-end"] . '" />
+	<input type = "hidden" name = "column" value = "' . $_GET["column"] . '" />
+	
 	<tr>
 		<td width = "20%" style="padding: 8px;background-color: ' . $table_column_color . ';border-radius: 6px 0 0 0;">Server Name</td>
 		<td style = "padding: 8px;background-color: ' . $table_column_color . ';">uri</td>
@@ -519,9 +503,12 @@
 		<td style = "padding: 8px;background-color: ' . $table_column_color . ';">response time</td>
 		<td style = "padding: 8px;background-color: ' . $table_column_color . ';">elapsed time</td>
 		<td style = "padding: 8px;background-color: ' . $table_column_color . ';">response</td>
-		<td width = "1%"  style="padding: 8px;background-color: ' . $table_column_color . ';border-radius: 0 6px 0 0;">X</td>
-	</tr>';
-	
+		<td width = "3%"  style="padding: 4px;background-color: ' . $table_column_color . ';">
+			<button type = "submit" class = "button">X</button>
+		</td>
+	</tr>
+
+	';
 		// add entire API list
 		for($i = 0; $i < mysqli_num_rows($result); $i++)
 		{
@@ -536,9 +523,10 @@
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['response_time'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['elapsed_time_nano'] / 1000000 . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['response_code'] . '</td>
-		<td style = "background-color: ' . $color . ';"><a onclick="delete_row(' . $mode . ', ' . $row['log_id'] .')"><img src="' . $x_button_url . '" /></a></td>
+		<td style = "background-color: ' . $color . '; text-align:center;"><input type = "checkbox" name = "delete_list[]" value = "' . $row["log_id"] . '"></td>
 	</tr>';
 		}
+		$table_string = $table_string . '</form>';
 	}
 	
 	// echo actual string
@@ -554,7 +542,7 @@
 	// define search data
 	$search_get_data = ($_GET['search_key'] != null ? '&column=' . $_GET['column'] . '&search_key=' . $_GET['search_key'] : '');
 	
-	// add Prev button
+	// add Prev 
 	if($_GET['column'] != "date")
 	{
 	$page_string = '
