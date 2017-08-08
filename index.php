@@ -542,7 +542,7 @@
 	// define search data
 	$search_get_data = ($_GET['search_key'] != null ? '&column=' . $_GET['column'] . '&search_key=' . $_GET['search_key'] : '');
 	
-	// add Prev 
+	// add Prev button
 	if($_GET['column'] != "date")
 	{
 	$page_string = '
