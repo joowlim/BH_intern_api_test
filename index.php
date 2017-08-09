@@ -97,6 +97,8 @@
 	{
 		if(sel.value == "date")
 			document.getElementById('search_field').innerHTML = '<input style = "width: 30%" type = "datetime-local" name = "date-start" value = "<?php echo $_GET['date-start']; ?>" />~<input style = "width: 30%" type = "datetime-local" name = "date-end" value = "<?php echo $_GET['date-end']; ?>" />';
+		else if(sel.value == "elapsed")
+			document.getElementById('search_field').innerHTML = '<input style = "width: 30%" type = "text" name = "elapsed_lowerbound" value = "<?php echo $_GET['elapsed_lowerbound']; ?>" />~<input style = "width: 30%" type = "text" name = "elapsed_upperbound" value = "<?php echo $_GET['elapsed_upperbound']; ?>" />';
 		else
 			document.getElementById('search_field').innerHTML = '<input style = "width: 60%" type = "text" name = "search_key" />';
 	}
@@ -285,6 +287,19 @@
 			$sql = "SELECT * FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON test_log.server_id = server_list.server_id " . $search_where_clause . " ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
 			$num_sql = "SELECT COUNT(*) FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON test_log.server_id = server_list.server_id " . $search_where_clause;
 		}
+		elseif($_GET['column'] == "elapsed")
+		{
+			$elapsed_lowerbound = $_GET['elapsed_lowerbound'] * 1000000;
+			$elapsed_upperbound = $_GET['elapsed_upperbound'] * 1000000;
+
+			$sql = "SELECT * FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON  test_log.server_id = server_list.server_id WHERE CAST(elapsed_time_nano as UNSIGNED) > ". $elapsed_lowerbound ." AND CAST(elapsed_time_nano as UNSIGNED) < ". $elapsed_upperbound;
+			?>
+			<script>
+				console.log(<?php echo $sql; ?>);
+			</script>
+			<?php
+			$num_sql = "SELECT COUNT(*) FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON  test_log.server_id = server_list.server_id WHERE CAST(elapsed_time_nano as UNSIGNED) > ". $elapsed_lowerbound ." AND CAST(elapsed_time_nano as UNSIGNED) < ". $elapsed_upperbound;
+		}
 		elseif($_GET['column'] == "date")
 		{
 			$date_start = $_GET['date-start'];
@@ -355,10 +370,12 @@
 				{
 				echo'
 				<select style = "width: 15%" name = "column" onchange="change_search_field(this)">
-					<option value = "server_name" ' . ($_GET['column'] == "server_name" ? 'selected = "selected"' : '') . '>Server</option>
-					<option value = "method" ' . ($_GET['column'] == "method" ? 'selected = "selected"' : '') . '>Method</option>
-					<option value = "uri" ' . ($_GET['column'] == "uri" ? 'selected = "selected"' : '') . '>URI</option>
-					<option value = "date" ' . ($_GET['column'] == "date" ? 'selected = "selected"' : '') . '>Date</option>
+					<option name = server_name value = "server_name" ' . ($_GET['column'] == "server_name" ? 'selected = "selected"' : '') . '>Server</option>
+					<option name = method value = "method" ' . ($_GET['column'] == "method" ? 'selected = "selected"' : '') . '>Method</option>
+					<option name = uri value = "uri" ' . ($_GET['column'] == "uri" ? 'selected = "selected"' : '') . '>URI</option>
+					<option name = date value = "date" ' . ($_GET['column'] == "date" ? 'selected = "selected"' : '') . '>Date</option>
+					<option name = response_code value = "response_code" ' . ($_GET['column'] == "response_code" ? 'selected = "selected"' : '') . '>Response</option>
+					<option name = elapsed value = "elapsed" ' . ($_GET['column'] == "elapsed" ? 'selected = "selected"' : '') . '>Elapsed_time</option>
 				</select>
 				';
 				}
@@ -370,6 +387,14 @@
 					?>
 					<input style = "width: 30%" type = "datetime-local" name = "date-start" value = "<?php echo $_GET['date-start']; ?>"/>~
 					<input style = "width: 30%" type = "datetime-local" name = "date-end" value = "<?php echo $_GET['date-end']; ?>"/>
+					<?php
+						}
+						elseif($_GET['column'] == "elapsed")
+						{
+					?>
+					<input style = "width: 30%" type = "text" name = "elapsed_lowerbound" value = "<?php echo $_GET['elapsed_lowerbound']; ?>" />~
+					<input style = "width: 30%" type = "text" name = "elapsed_upperbound" value = "<?php echo $_GET['elapsed_upperbound']; ?>" />
+				
 					<?php
 						}
 						else
