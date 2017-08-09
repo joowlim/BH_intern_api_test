@@ -292,13 +292,13 @@
 			$elapsed_lowerbound = $_GET['elapsed_lowerbound'] * 1000000;
 			$elapsed_upperbound = $_GET['elapsed_upperbound'] * 1000000;
 
-			$sql = "SELECT * FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON  test_log.server_id = server_list.server_id WHERE CAST(elapsed_time_nano as UNSIGNED) > ". $elapsed_lowerbound ." AND CAST(elapsed_time_nano as UNSIGNED) < ". $elapsed_upperbound;
+			$sql = "SELECT * FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON  test_log.server_id = server_list.server_id WHERE CAST(elapsed_time_nano as UNSIGNED) >= ". $elapsed_lowerbound ." AND CAST(elapsed_time_nano as UNSIGNED) <= ". $elapsed_upperbound . " ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
 			?>
 			<script>
 				console.log(<?php echo $sql; ?>);
 			</script>
 			<?php
-			$num_sql = "SELECT COUNT(*) FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON  test_log.server_id = server_list.server_id WHERE CAST(elapsed_time_nano as UNSIGNED) > ". $elapsed_lowerbound ." AND CAST(elapsed_time_nano as UNSIGNED) < ". $elapsed_upperbound;
+			$num_sql = "SELECT COUNT(*) FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON  test_log.server_id = server_list.server_id WHERE CAST(elapsed_time_nano as UNSIGNED) >= ". $elapsed_lowerbound ." AND CAST(elapsed_time_nano as UNSIGNED) <= ". $elapsed_upperbound;
 		}
 		elseif($_GET['column'] == "date")
 		{
@@ -519,6 +519,8 @@
 	<input type = "hidden" name = "search_key" value = "' . $_GET["search_key"] . '" />
 	<input type = "hidden" name = "date-start" value = "' . $_GET["date-start"] . '" />
 	<input type = "hidden" name = "date-end" value = "' . $_GET["date-end"] . '" />
+	<input type = "hidden" name = "elapsed_lowerbound" value = "' . $_GET["elapsed_lowerbound"] . '" />
+	<input type = "hidden" name = "elapsed_upperbound" value = "' . $_GET["elapsed_upperbound"] . '" />
 	<input type = "hidden" name = "column" value = "' . $_GET["column"] . '" />
 	
 	<tr>
@@ -569,48 +571,54 @@
 	$search_get_data = ($_GET['search_key'] != null ? '&column=' . $_GET['column'] . '&search_key=' . $_GET['search_key'] : '');
 	
 	// add Prev button
-	if($_GET['column'] != "date")
-	{
-	$page_string = '
-		<a href = "./index.php?mode=' . $mode . '&page=' . ($page - 1 >= 0 ? $page - 1 : 0) . $search_get_data .'" style = "text-decoration:none"><img src="' . $left_button_url . '" /></a> ';
-	}
-	else
-	{
-	$page_string = '
+	if($_GET['column'] == "date") {
+		$page_string = '
 		<a href = "./index.php?mode=' . $mode . '&page=' . ($page - 1 >= 0 ? $page - 1 : 0) . '&column=date&date-start=' . $_GET['date-start'] . '&date-end=' . $_GET['date-end'] . '" style = "text-decoration:none"><img src="' . $left_button_url . '" /></a> ';
 	}
+	else if ($_GET['column'] == "elapsed") {
+		$page_string = '
+		<a href = "./index.php?mode=' . $mode . '&page=' . ($page - 1 >= 0 ? $page - 1 : 0) . '&column=elapsed&elapsed_lowerbound=' . $_GET['elapsed_lowerbound'] . '&elapsed_upperbound=' . $_GET['elapsed_upperbound'] .'" style = "text-decoration:none"><img src="' . $left_button_url . '" /></a> ';
+	}
+	else {
+		$page_string = '
+		<a href = "./index.php?mode=' . $mode . '&page=' . ($page - 1 >= 0 ? $page - 1 : 0) . $search_get_data .'" style = "text-decoration:none"><img src="' . $left_button_url . '" /></a> ';
+	}
 	// add page number
-	for($i = floor($page / $page_list_num) * $page_list_num; $i < min($num_pages + 1, floor($page / $page_list_num) * $page_list_num + $page_list_num); $i++)
-	{
-		if($i != $page)
-		{
-			if($_GET['column'] != "date")
-			{
+	for($i = floor($page / $page_list_num) * $page_list_num; $i < min($num_pages + 1, floor($page / $page_list_num) * $page_list_num + $page_list_num); $i++) {
+		if($i != $page) {
+			if($_GET['column'] == "date") {
 				$page_string = $page_string . '
-		<a href = "./index.php?mode=' . $mode . '&page=' . $i . $search_get_data . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';
+				<a href = "./index.php?mode=' . $mode . '&page=' . $i . '&column=date&date-start=' . $_GET['date-start'] . '&date-end=' . $_GET['date-end'] . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';
 			}
-			else
-			{
+			else if ($_GET['column'] == "elapsed") {
 				$page_string = $page_string . '
-		<a href = "./index.php?mode=' . $mode . '&page=' . $i . '&column=date&date-start=' . $_GET['date-start'] . '&date-end=' . $_GET['date-end'] . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';			
+				<a href = "./index.php?mode=' . $mode . '&page=' . $i . '&column=elapsed&elapsed_lowerbound=' . $_GET['elapsed_lowerbound'] . '&elapsed_upperbound=' . $_GET['elapsed_upperbound'] . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';
+			}
+			else {
+				$page_string = $page_string . '
+				<a href = "./index.php?mode=' . $mode . '&page=' . $i . $search_get_data . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';
+					
 			}
 		}
-		else
-		{
+		else {
 			$page_string = $page_string .
 		($i + 1) . ' ';
 		}
 	}
 	// add Next button
-	if($_GET['column'] != "date")
-	{
-	$page_string = $page_string . '
-		<a href = "./index.php?mode=' . $mode . '&page=' . ($page + 1 <= $num_pages ? $page + 1 : $num_pages) . $search_get_data . '" style = "text-decoration: none"><img src = "' . $right_button_url . '"/></a>';
-	}
-	else
-	{
-	$page_string = $page_string . '
+	if($_GET['column'] == "date") {
+		$page_string = $page_string . '
 		<a href = "./index.php?mode=' . $mode . '&page=' . ($page + 1 <= $num_pages ? $page + 1 : $num_pages) . '&column=date&date-start=' . $_GET['date-start'] . '&date-end=' . $_GET['date-end'] . '" style = "text-decoration: none"><img src = "' . $right_button_url . '"/></a>';	
+	}
+	else if ($_GET['column'] == "elapsed") {
+		$page_string = $page_string . '
+		<a href = "./index.php?mode=' . $mode . '&page=' . ($page + 1 <= $num_pages ? $page + 1 : $num_pages) . '&column=elapsed&elapsed_lowerbound=' . $_GET['elapsed_lowerbound'] . '&elapsed_upperbound=' . $_GET['elapsed_upperbound'] . '" style = "text-decoration: none"><img src = "' . $right_button_url . '"/></a>';
+
+	}
+	else {
+		$page_string = $page_string . '
+		<a href = "./index.php?mode=' . $mode . '&page=' . ($page + 1 <= $num_pages ? $page + 1 : $num_pages) . $search_get_data . '" style = "text-decoration: none"><img src = "' . $right_button_url . '"/></a>';
+
 	}
 	// echo actual page string
 	echo $page_string;
