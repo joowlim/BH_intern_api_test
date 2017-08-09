@@ -292,7 +292,7 @@
 			$elapsed_lowerbound = $_GET['elapsed_lowerbound'] * 1000000;
 			$elapsed_upperbound = $_GET['elapsed_upperbound'] * 1000000;
 
-			$sql = "SELECT * FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON  test_log.server_id = server_list.server_id WHERE CAST(elapsed_time_nano as UNSIGNED) >= ". $elapsed_lowerbound ." AND CAST(elapsed_time_nano as UNSIGNED) <= ". $elapsed_upperbound;
+			$sql = "SELECT * FROM test_log LEFT JOIN api_list ON test_log.api_id = api_list.api_id LEFT JOIN server_list ON  test_log.server_id = server_list.server_id WHERE CAST(elapsed_time_nano as UNSIGNED) >= ". $elapsed_lowerbound ." AND CAST(elapsed_time_nano as UNSIGNED) <= ". $elapsed_upperbound . " ORDER BY log_id DESC LIMIT " . $offset . ", " . $list_row_num;
 			?>
 			<script>
 				console.log(<?php echo $sql; ?>);
