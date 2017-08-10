@@ -440,7 +440,7 @@
 			$color = ($i % 2 == 0 ? $table_row_color_dark : $table_row_color_light);
 			$row = mysqli_fetch_array($result);
 			$table_string = $table_string . '
-	<tr>
+	<tr height = "35">
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['uri'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['method'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['params'] . '</td>
@@ -471,7 +471,7 @@
 			$color = ($i % 2 == 0 ? $table_row_color_dark : $table_row_color_light);
 			$row = mysqli_fetch_array($result);
 			$table_string = $table_string . '
-	<tr>
+	<tr height = "35">
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['server_url'] . $row['uri'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['method'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['test_params'] . '</td>
@@ -500,7 +500,7 @@
 			$color = ($i % 2 == 0 ? $table_row_color_dark : $table_row_color_light);
 			$row = mysqli_fetch_array($result);
 			$table_string = $table_string . '
-	<tr>
+	<tr height = "35">
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['server_name'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['server_url'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['server_ip'] . '</td>
@@ -524,26 +524,25 @@
 	<input type = "hidden" name = "column" value = "' . $_GET["column"] . '" />
 	
 	<tr>
-		<td width = "20%" style="padding: 8px;background-color: ' . $table_column_color . ';border-radius: 6px 0 0 0;">Server Name</td>
+		<td width = "15%" style="padding: 8px;background-color: ' . $table_column_color . ';border-radius: 6px 0 0 0;">Server Name</td>
 		<td style = "padding: 8px;background-color: ' . $table_column_color . ';">uri</td>
 		<td style = "padding: 8px;background-color: ' . $table_column_color . ';">method	</td>
 		<td style = "padding: 8px;background-color: ' . $table_column_color . ';">request time</td>
 		<td style = "padding: 8px;background-color: ' . $table_column_color . ';">response time</td>
 		<td style = "padding: 8px;background-color: ' . $table_column_color . ';">elapsed time</td>
 		<td style = "padding: 8px;background-color: ' . $table_column_color . ';">response</td>
-		<td width = "3%"  style="padding: 4px;background-color: ' . $table_column_color . ';">
+		<td width = "3%"  style="padding: 8px;border-radius: 0 6px 0 0;background-color: ' . $table_column_color . ';">
 			<button type = "submit" class = "button">X</button>
 		</td>
 	</tr>
-
 	';
-		// add entire API list
+		// add entire Log list
 		for($i = 0; $i < mysqli_num_rows($result); $i++)
 		{
 			$color = ($i % 2 == 0 ? $table_row_color_dark : $table_row_color_light);
 			$row = mysqli_fetch_array($result);
 			$table_string = $table_string . '
-	<tr>
+	<tr height = "35">
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['server_name'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['uri'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['method'] . '</td>
@@ -551,7 +550,7 @@
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['response_time'] . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['elapsed_time_nano'] / 1000000 . '</td>
 		<td style = "background-color: ' . $color . ';">&nbsp;' . $row['response_code'] . '</td>
-		<td style = "background-color: ' . $color . '; text-align:center;"><input type = "checkbox" name = "delete_list[]" value = "' . $row["log_id"] . '"></td>
+		<td style = "background-color: ' . $color . '; text-align:center;"><input type = "checkbox" name = "delete_list[]" value = "' . $row["log_id"] . '" /></td>
 	</tr>';
 		}
 		$table_string = $table_string . '</form>';
@@ -596,8 +595,7 @@
 			}
 			else {
 				$page_string = $page_string . '
-				<a href = "./index.php?mode=' . $mode . '&page=' . $i . $search_get_data . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';
-					
+				<a href = "./index.php?mode=' . $mode . '&page=' . $i . $search_get_data . '" style = "text-decoration: none;color: blue">' . ($i + 1) . ' </a>';		
 			}
 		}
 		else {
@@ -613,12 +611,10 @@
 	else if ($_GET['column'] == "elapsed") {
 		$page_string = $page_string . '
 		<a href = "./index.php?mode=' . $mode . '&page=' . ($page + 1 <= $num_pages ? $page + 1 : $num_pages) . '&column=elapsed&elapsed_lowerbound=' . $_GET['elapsed_lowerbound'] . '&elapsed_upperbound=' . $_GET['elapsed_upperbound'] . '" style = "text-decoration: none"><img src = "' . $right_button_url . '"/></a>';
-
 	}
 	else {
 		$page_string = $page_string . '
 		<a href = "./index.php?mode=' . $mode . '&page=' . ($page + 1 <= $num_pages ? $page + 1 : $num_pages) . $search_get_data . '" style = "text-decoration: none"><img src = "' . $right_button_url . '"/></a>';
-
 	}
 	// echo actual page string
 	echo $page_string;
