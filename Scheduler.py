@@ -7,7 +7,7 @@ ini_lines = ini_file.readlines()
 inis = dict()
 
 for ini_line in ini_lines:
-	if ini_line[0] != '#' and ini_line != '\n' :
+	if ini_line[0] != '#' and ini_line != '\n':
 		(var_name, var_value) = ini_line.split("=")
 		inis[var_name.rstrip(" ")] = var_value.lstrip(" ").rstrip('\n')
 		
