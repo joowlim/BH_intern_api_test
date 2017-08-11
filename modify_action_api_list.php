@@ -1,5 +1,5 @@
 <html>
-	<h1 style = "text-align: center"><img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()"/>Test API Admin<img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()"/></h1>
+	<h1 style = "text-align: center"><img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()" />Test API Admin<img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()" /></h1>
 <body>
 <p id = "error_msg"></p>
 <?php
@@ -10,8 +10,8 @@
 	$uri = $_GET['uri'];
 	$method = $_GET['method_list'];
 	$params_origin = $_GET['params'];
-	$params_array = json_decode($params_origin,true);
-	foreach($params_array as $key => $value){
+	$params_array = json_decode($params_origin, true);
+	foreach($params_array as $key => $value) {
 		$index = 'key_'.$key;
 		$params_array[$key] = $_GET[$index];
 	}
@@ -20,7 +20,7 @@
   
 	include("./db_account_info.php");
 	$conn = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
-	if(!$conn){
+	if(!$conn) {
 		// printf("%s\n",mysqli_error($conn));
 		echo '<script>
 				alert("DB connect 에러");
@@ -32,18 +32,18 @@
 	}
 	mysqli_set_charset($conn, 'utf8');
 	
-	$sql = "UPDATE api_list SET uri=\"".$uri."\", method=\"".$method."\", params='".$params_hangeul."' WHERE api_id=".$id;
-	$result = mysqli_query($conn,$sql);
-	if(!$result){
+	$sql = "UPDATE api_list SET uri=\"" . $uri . "\", method=\"" . $method . "\", params='" . $params_hangeul . "' WHERE api_id=" . $id;
+	$result = mysqli_query($conn, $sql);
+	if(!$result) {
 		// printf("%s\n",mysqli_error($conn));
 		echo '<script>alert("sql 쿼리 에러")</script>';
-		printf("%s\n",mysqli_error($conn));
+		printf("%s\n", mysqli_error($conn));
 		echo '
 		<script> 
 		window.location = \'./index.php\';
 		</script>';
 	}
-	else{
+	else {
 		echo '<script>alert("API 수정완료")</script>';
 		echo '
 		<script> 

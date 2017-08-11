@@ -1,16 +1,16 @@
 <?php 
 	include("./db_account_info.php");
 
-function take_api($db_server,$db_user,$db_password,$db_schema){
-	$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
+function take_api($db_server, $db_user, $db_password, $db_schema) {
+	$conn = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 	mysqli_set_charset($conn, 'utf8');
 
-	if(mysqli_connect_errno($conn)){
-	    echo "데이터베이스 연결 실패: ".mysqli_connect_error();
+	if(mysqli_connect_errno($conn)) {
+	    echo "데이터베이스 연결 실패: " . mysqli_connect_error();
 	}
-	else{
+	else {
 	}
-	$take = mysqli_query($conn,"SELECT * FROM api_list where api_id = " . $_GET['api_id']); 
+	$take = mysqli_query($conn, "SELECT * FROM api_list where api_id = " . $_GET['api_id']); 
 
 	$set = mysqli_fetch_array($take);
 	$id =  $set['api_id'];
@@ -22,28 +22,28 @@ function take_api($db_server,$db_user,$db_password,$db_schema){
 
 	mysqli_close($conn);
 	
-	$api = array($id,$uri,$method,$json,$params);
+	$api = array($id, $uri, $method, $json, $params);
 	return $api;
 }
 
-function take_server($db_server,$db_user,$db_password,$db_schema,$server_url,$server_ip){
-	$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
+function take_server($db_server, $db_user, $db_password, $db_schema, $server_url, $server_ip) {
+	$conn = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 	mysqli_set_charset($conn, 'utf8');
 
-	if(mysqli_connect_errno($conn)){
-	    echo "데이터베이스 연결 실패: ".mysqli_connect_error();
+	if(mysqli_connect_errno($conn)) {
+	    echo "데이터베이스 연결 실패: " . mysqli_connect_error();
 	}
-	else{
+	else {
 	}
-	$take1 = mysqli_query($conn,"SELECT * FROM server_list where server_url = '$server_url' or server_ip = '$server_ip'");
-	if (!$take1){
+	$take1 = mysqli_query($conn, "SELECT * FROM server_list where server_url = '$server_url' or server_ip = '$server_ip'");
+	if (!$take1) {
 		// printf("Hello");
 		// printf("Error: %s\n", mysqli_error($conn));
 		// exit();
 	}
 	 
 	$take = mysqli_fetch_array($take1);
-	if (!$take){
+	if (!$take) {
 		// printf("Error: %s\n", mysqli_error($conn));
 		// exit();
 	}
@@ -56,24 +56,24 @@ function take_server($db_server,$db_user,$db_password,$db_schema,$server_url,$se
 	return $serverid;
 }
 
-function insert($db_server,$db_user,$db_password,$db_schema,$insertArr){
-	$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
+function insert($db_server, $db_user, $db_password, $db_schema, $insert_arr) {
+	$conn = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 	mysqli_set_charset($conn, 'utf8');
 
-	if(mysqli_connect_errno($conn)){
-	    echo "데이터베이스 연결 실패: ".mysqli_connect_error();
+	if(mysqli_connect_errno($conn)) {
+	    echo "데이터베이스 연결 실패: " . mysqli_connect_error();
 	}
-	else{
+	else {
 	}
-	$intimm = (int)$insertArr[3];
-	$intper = (int)$insertArr[4];
+	$intimm = (int)$insert_arr[3];
+	$intper = (int)$insert_arr[4];
 
-	$insert = mysqli_query($conn,"insert into test_api_list (server_id, api_id, test_params, immediately, period) Values('$insertArr[0]','$insertArr[1]','$insertArr[2]','$intimm', $intper)");
+	$insert = mysqli_query($conn,"insert into test_api_list (server_id, api_id, test_params, immediately, period) Values('$insert_arr[0]','$insert_arr[1]','$insert_arr[2]','$intimm', $intper)");
 
-	if(!$insert){
+	if(!$insert) {
 		echo '<script>alert("Failed to insert")</script>';
 	}
-	else{
+	else {
 		echo '<script>alert("API inserted")</script>';
 		echo '
 		<script> 
@@ -83,20 +83,19 @@ function insert($db_server,$db_user,$db_password,$db_schema,$insertArr){
 	mysqli_close($conn);
 }
 
-function my_json_encode($arr)
-{
+function my_json_encode($arr) {
     // convmap since 0x80 char codes so it takes all multibyte codes (above ASCII 127). So such characters are being "hidden" from normal json_encoding
     array_walk_recursive($arr, function (&$item, $key) { if (is_string($item)) $item = mb_encode_numericentity($item, array (0x80, 0xffff, 0, 0xffff), 'UTF-8'); });
     return mb_decode_numericentity(json_encode($arr), array (0x80, 0xffff, 0, 0xffff), 'UTF-8');
 }
 
-function han ($s) { return reset(json_decode('{"s":"'.$s.'"} ')); }
+function han ($s) { return reset(json_decode('{"s":"' . $s . '"} ')); }
 
-function to_han ($str) { return preg_replace('/(\\\u[a-f0-9]+)+/e','han("$0")',$str); }
+function to_han ($str) { return preg_replace('/(\\\u[a-f0-9]+)+/e','han("$0")', $str); }
 
-function getServer($db_server, $db_user, $db_password, $db_schema){
+function getServer($db_server, $db_user, $db_password, $db_schema) {
 	$server_list = array();
-	$conn = mysqli_connect($db_server,$db_user,$db_password,$db_schema);
+	$conn = mysqli_connect($db_server, $db_user, $db_password, $db_schema);
 	mysqli_set_charset($conn, 'utf8');
 
 	$sql = "SELECT server_name, server_url, server_id FROM server_list";
@@ -114,40 +113,40 @@ function getServer($db_server, $db_user, $db_password, $db_schema){
 <html>
 <head>
 <meta charset = "UTF-8">
-<h1 style = "text-align: center"><img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()"/>Test API Admin<img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()"/></h1>
+<h1 style = "text-align: center"><img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()" />Test API Admin<img src = "./img/parrot_reading.gif" width = 48 onClick = "window.location.reload()" /></h1>
 </head>
 <body align = "center">
 <?php
-	$api = take_api($db_server,$db_user,$db_password,$db_schema);
+	$api = take_api($db_server, $db_user, $db_password, $db_schema);
 	
 	$params = json_decode($api[3], true);
 	$reloads = array();
-	foreach($params as $key => $value){
-		if($_POST[$key]){
+	foreach($params as $key => $value) {
+		if($_POST[$key]) {
 			$reloads[$key] = $_POST[$key];
 		}
 	}
 	$count = count($params);
 ?>
 <style>
-	form{
-		margin : auto
-		padding : 1em;
-		border : 4px;
-		border-radius : 1em;
+	form {
+		margin: auto
+		padding: 1em;
+		border: 4px;
+		border-radius: 1em;
 	}
-	form div + div{
-		margin-top : 1em;
+	form div + div {
+		margin-top: 1em;
 	}
-	h1 {color : rgb(110,140,255);}
+	h1 {color: rgb(110,140,255);}
 	h3 {
 		background: rgb(240,120,120);
 		color: white;
 		font: impact;
 	}
-	input{
-		height : 20px;
-		box-sizing : border-box;
+	input {
+		height: 20px;
+		box-sizing: border-box;
 		box-shadow: 0 0 5px #43D1AF;
 		width: 30%;	
 	} 
@@ -182,11 +181,11 @@ function getServer($db_server, $db_user, $db_password, $db_schema){
 	<h3>파라미터 입력하는 곳입니다.</h3>
 
 	<div style = "padding: 3%; font-style: italic; font-size: 1.0em; font-family: impact;" id = "forparams">
-		<input type = "submit" value = "insert test api" style ="width:20%; height:40px;">
+		<input type = "submit" value = "insert test api" style = "width: 20%; height: 40px;">
 	</div>
 </form>
 </div>
-<script type="text/javascript">
+<script type = "text/javascript">
 	<?php 
 		$res = json_encode($params);
 		$res = urldecode($res);
@@ -194,29 +193,29 @@ function getServer($db_server, $db_user, $db_password, $db_schema){
 	?>
 	var reloads = <?php echo json_encode($reloads);?>;
 	
-	var paramArr = <?php echo iconv("CP949","UTF-8",$res);?>;
-	var paramArr2 = [];
-	for(var i in paramArr){
-		paramArr2.push([i, paramArr[i]]);
+	var param_arr = <?php echo iconv("CP949", "UTF-8", $res);?>;
+	var param_arr2 = [];
+	for(var i in param_arr) {
+		param_arr2.push([i, param_arr[i]]);
 	}
-	var hh = JSON.stringify(paramArr)
+	var hh = JSON.stringify(param_arr)
 
-	function addData(namev,preval) {
+	function addData(namev, preval) {
 	    var elem = document.createElement("input");
 	    elem.setAttribute("type", "text");
 	    elem.setAttribute("name", namev);
-	    if(preval){
+	    if(preval) {
 	    	elem.setAttribute("value", preval);
 	    }
 	    return elem;
 	}
-	function addlabel(text){
+	function addlabel(text) {
 		var label = document.createElement("label")
 		label.setAttribute("for", text);
 		label.innerText = text;
 		return label;
 	}
-	function adddiv(id){
+	function adddiv(id) {
 		var id = document.createElement("div")
 		id.setAttribute("id", id);
 		return id;
@@ -224,46 +223,46 @@ function getServer($db_server, $db_user, $db_password, $db_schema){
   
 	var forparams = document.getElementById("forparams");
 	var count = "<?php echo($count); ?>";
-	for(i=0; i<count; i++){
+	for(i = 0; i < count; i++) {
     
 		// console.log("parameter checking");
-		var div = adddiv(paramArr2[i][0]);
-		var label = addlabel(paramArr2[i][0].concat(" 파라미터 값을 입력해주세요 : "));
-		var input = addData(paramArr2[i][0],reloads[paramArr2[i][0]]);
-		// console.log(paramArr2[i][0]);
+		var div = adddiv(param_arr2[i][0]);
+		var label = addlabel(param_arr2[i][0].concat(" 파라미터 값을 입력해주세요 : "));
+		var input = addData(param_arr2[i][0], reloads[param_arr2[i][0]]);
+		// console.log(param_arr2[i][0]);
 		div.appendChild(label);
 		div.appendChild(input);
 		forparams.appendChild(div);
 	}
 </script>
 <?php
-	if($_SERVER['REQUEST_METHOD']=='POST'){
+	if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$id = $_POST['server'];
 	
-		$paramArray = array();
-		foreach($params as $key => $value){
-			$paramArray[$key] = $_POST[$key];
+		$param_array = array();
+		foreach($params as $key => $value) {
+			$param_array[$key] = $_POST[$key];
 		}
 
-		$jsonwant = json_encode($paramArray);
+		$jsonwant = json_encode($param_array);
 		$jsonwant2 = str_replace('","', '", "', to_han($jsonwant));
 
-		$insertArr = array();
-		array_push($insertArr,$id);
-		array_push($insertArr,$api[0]);
-		array_push($insertArr,$jsonwant2);
+		$insert_arr = array();
+		array_push($insert_arr, $id);
+		array_push($insert_arr, $api[0]);
+		array_push($insert_arr, $jsonwant2);
 		
-		array_push($insertArr,$_POST['immediately']);
+		array_push($insert_arr, $_POST['immediately']);
 		
 		// immediately 보고 period 넣을지 안넣을지 정하는 부분.
-		if($_POST['immediately'] == '1'){
-			array_push($insertArr,NULL);
+		if($_POST['immediately'] == '1') {
+			array_push($insert_arr, NULL);
 		}
-		else{
-			array_push($insertArr,$_POST['period']);
+		else {
+			array_push($insert_arr, $_POST['period']);
 		}
         
-		insert($db_server,$db_user,$db_password,$db_schema,$insertArr);
+		insert($db_server, $db_user, $db_password, $db_schema, $insert_arr);
 	}
 ?>
 </body>

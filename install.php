@@ -40,7 +40,7 @@
 <div align="center">
 	<h1>Database connection configuration</h1>
 	<form method = "POST">
-		<table style = "border-collapse: collapse;" border = 1 >
+		<table style = "border-collapse: collapse;" border = 1>
 			<tr>
 				<td>Server Address </td>
 				<td><input type = "text" name = "server" value = "<?php echo $db_server; ?>" /></td>
